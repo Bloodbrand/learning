@@ -4,7 +4,11 @@ require.config({
        "jquery" : "../bower_components/jquery/dist/jquery",
        "three" : "../bower_components/three.js/build/three",
        "windowResize" : "../bower_components/threex.windowresize/threex.windowresize",
-       "animate": "animate"
+       "main": "main",
+       "animate": "animate",
+       "sceneManager": "sceneManager",
+       "models" : "models",
+       "gameManager" : "gameManager"
    }
 });
 

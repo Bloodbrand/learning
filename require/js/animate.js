@@ -1,4 +1,4 @@
-define([], function(){
+define(["sceneManager"], function(sceneManager){
     var settings = {
         then: Date.now(),
         now: undefined,
@@ -26,7 +26,12 @@ define([], function(){
     }
 
     return {
-        animate: animate
+        startAnimating: function(){
+            animVars.renderer = sceneManager.get("renderer");
+            animVars.scene = sceneManager.get("scene");
+            animVars.camera = sceneManager.get("camera");
+            animate();
+        }
         ,
         set: function(name, val){ animVars[name] = val; }
     };
