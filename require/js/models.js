@@ -3,7 +3,7 @@ define(["three", "sceneManager"], function(three, sceneManager){
         tile: {
             length: 1,
             width: 1,
-            height: 0.1
+            height: 0.3
         }
     };
 
@@ -13,7 +13,7 @@ return{
             modelSettings.tile.width,
             modelSettings.tile.height,
             modelSettings.tile.length ),
-            new THREE.MeshBasicMaterial( {color: 0x00ff00} ));
+            new THREE.MeshBasicMaterial( {color: sceneManager.randomColor()} ));
     }
     ,
     returnHolder: function(){ return new THREE.Object3D(); }

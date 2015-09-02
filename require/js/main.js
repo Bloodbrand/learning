@@ -22,7 +22,7 @@ return{
     }
     ,
     addRenderer: function(){
-        var r = new THREE.WebGLRenderer();
+        var r = new THREE.WebGLRenderer(/*{antialias: true}*/);
         r.setSize( mainVars.width, mainVars.height );
         mainVars.container.append( r.domElement );
         sceneManager.set("renderer", r);
@@ -31,14 +31,14 @@ return{
     addCamera: function(){
         var c = new THREE.PerspectiveCamera( mainVars.camFov, mainVars.width / mainVars.height,
             mainVars.camNear, mainVars.camFar );
-        c.position.set(0, 25, 5);
+        c.position.copy(sceneManager.get("cameraPosition"));
         c.lookAt(new THREE.Vector3( 0, 0, 0 ));
         sceneManager.set("camera", c);
         sceneManager.add(c);
     }
     ,
     addLight: function(){
-        var ambientLight = new THREE.AmbientLight( 0xffffff );
+        var ambientLight = new THREE.AmbientLight( 0x333333 );
         sceneManager.add(ambientLight);
 
         var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 );

@@ -8,7 +8,8 @@ require.config({
        "animate": "animate",
        "sceneManager": "sceneManager",
        "models" : "models",
-       "gameManager" : "gameManager"
+       "gameManager" : "gameManager",
+       "pathfinding" : "pathfinding"
    }
 });
 

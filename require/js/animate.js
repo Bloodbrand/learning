@@ -2,7 +2,7 @@ define(["sceneManager"], function(sceneManager){
     var settings = {
         then: Date.now(),
         now: undefined,
-        fps: 30,
+        fps: 60,
         delta: undefined
     };
     settings.interval = 1000 / settings.fps;
@@ -22,6 +22,7 @@ define(["sceneManager"], function(sceneManager){
         if (settings.delta > settings.interval){
             settings.then = settings.now - (settings.delta % settings.interval);
             animVars.renderer.render(animVars.scene, animVars.camera);
+            sceneManager.rotateCamera(animVars.camera, settings.fps);
         }
     }
 
