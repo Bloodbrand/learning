@@ -13,7 +13,7 @@ return{
         mainVars.width = $(window).width();
         mainVars.height = $(window).height();
         mainVars.container = $('#webGL');
-        sceneManager.set("scene", new THREE.Scene());
+        sceneManager.scene = new THREE.Scene();
         this.addRenderer();
         this.addCamera();
         this.addLight();
@@ -22,10 +22,10 @@ return{
     }
     ,
     addRenderer: function(){
-        var r = new THREE.WebGLRenderer(/*{antialias: true}*/);
+        var r = new THREE.WebGLRenderer({antialias: true});
         r.setSize( mainVars.width, mainVars.height );
         mainVars.container.append( r.domElement );
-        sceneManager.set("renderer", r);
+        sceneManager.renderer = r;
     }
     ,
     addCamera: function(){
@@ -33,7 +33,8 @@ return{
             mainVars.camNear, mainVars.camFar );
         c.position.copy(sceneManager.get("cameraPosition"));
         c.lookAt(new THREE.Vector3( 0, 0, 0 ));
-        sceneManager.set("camera", c);
+        //sceneManager.set("camera", c);
+        sceneManager.camera = c;
         sceneManager.add(c);
     }
     ,

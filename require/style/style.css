@@ -3,3 +3,7 @@ body{
     overflow: hidden;
     padding: 0px;
 }
+
+#buttons{
+    position: fixed;
+}

@@ -1,18 +1,19 @@
 require.config({
    paths: {
-       "underscore" : "../bower_components/underscore/underscore",
-       "jquery" : "../bower_components/jquery/dist/jquery",
-       "three" : "../bower_components/three.js/build/three",
+         "underscore" : "../bower_components/underscore/underscore",
+             "jquery" : "../bower_components/jquery/dist/jquery",
+              "three" : "../bower_components/three.js/build/three",
        "windowResize" : "../bower_components/threex.windowresize/threex.windowresize",
-       "main": "main",
-       "animate": "animate",
-       "sceneManager": "sceneManager",
-       "models" : "models",
-       "gameManager" : "gameManager",
-       "pathfinding" : "pathfinding"
+               "main" : "main",
+            "animate" : "animate",
+       "sceneManager" : "sceneManager",
+             "models" : "models",
+        "gameManager" : "gameManager",
+        "pathfinding" : "pathfinding",
+             "events" : "events"
    }
 });
 
-requirejs(["main"], function(main){
+requirejs(["main", "events"], function(main){
     main.Init();
 });

@@ -13,7 +13,7 @@ return{
             modelSettings.tile.width,
             modelSettings.tile.height,
             modelSettings.tile.length ),
-            new THREE.MeshBasicMaterial( {color: sceneManager.randomColor()} ));
+            new THREE.MeshLambertMaterial( {color: sceneManager.get("unexploredC")} ));
     }
     ,
     returnHolder: function(){ return new THREE.Object3D(); }

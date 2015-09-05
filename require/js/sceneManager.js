@@ -1,31 +1,41 @@
 define(["three"], function(three){
     var sceneVars = {
-        scene: undefined,
-        camera: undefined,
-        cameraAngle: 0,
+        cameraAngle: 90,
         cameraPivot: new THREE.Vector3(0,0,0),
-        cameraPosition: new THREE.Vector3(0, 15, 1),
-        cameraCircleRadius: 20,
-        renderer: undefined
+        cameraPosition: new THREE.Vector3(0, 45, 1),
+        cameraCircleRadius: 25,
+        unexploredC: 0xffffff,
+        exploredC: 0x00ff00,
+        endC: 0x0000ff,
+        pathC: 0xff0000,
+        startC: 0xff0000
     };
 
 return{
-    rotateCamera: function(cam, fps){
-        var angle = this.degreesToRadians(sceneVars.cameraAngle += 10 / fps),
+    camera: undefined
+    ,
+    scene: undefined
+    ,
+    renderer: undefined
+    ,
+    nodeMeshes: []
+    ,
+    rotateCamera: function(fps){
+        var angle = this.degreesToRadians(sceneVars.cameraAngle += 3 / fps),
             newX = sceneVars.cameraPosition.x + (sceneVars.cameraCircleRadius * Math.cos(angle)),
             newZ = sceneVars.cameraPosition.z + (sceneVars.cameraCircleRadius * Math.sin(angle));
 
-        cam.position.set(newX, sceneVars.cameraPosition.y, newZ);
-        cam.lookAt(sceneVars.cameraPivot);
+        this.camera.position.set(newX, sceneVars.cameraPosition.y, newZ);
+        this.camera.lookAt(sceneVars.cameraPivot);
     }
     ,
     randomColor: function(){ return Math.random() * 0xffffff; }
     ,
-    add: function(obj){ sceneVars.scene.add(obj); }
+    add: function(obj){ this.scene.add(obj); }
     ,
     remove: function(obj, parent){
         var p = parent;
-        if(!p) p = sceneVars.scene;
+        if(!p) p = this.scene;
         p.remove(obj);
     }
     ,

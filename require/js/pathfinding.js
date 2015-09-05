@@ -1,25 +1,44 @@
-define(["underscore"], function(underscore){
+define(["underscore", "sceneManager"], function(underscore, sceneManager){
     var pathVars = {
+        upDownMoveCost: 10,
+        diagMoveCost: 14,
+        obstacles: [],
+        openList: [],
+        closedList: [],
         start: undefined,
         current: undefined,
-        end: undefined,
-        upDownG_Val: 10,
-        diagG_Val: 14,
-        openList: [],
-        closedList: []
+        end: undefined
     };
 
     function isDiagonal(node, checkNode){
-        return !(checkNode.col == node.col || checkNode.row == node.row);
+        return (checkNode.col != node.col && checkNode.row != node.row);
     }
 
     function determineParent(node, checkNode){
-        if(!checkNode.parentNode) {
+        if(!checkNode.parentNode){
             checkNode.parentNode = node;
-            return;
+            return true;
         }
-        checkNode.parent = 1;
+
+        var moveCost = pathVars.upDownMoveCost;
+        if(isDiagonal(node, checkNode)) moveCost = pathVars.diagMoveCost;
+        if((node.gVal + moveCost) < checkNode.gVal){
+            checkNode.parentNode = node;
+            return true;
+        }
     }
+
+    var pathUtils = function(){
+        return{
+            stepTime: 10
+            ,
+            clearAllSprites: function(){
+                _.each(this.nodes, function(node){
+                    if(node.sprite) node.mesh.remove(node.sprite);
+                })
+            }
+        }
+    }();
 
 return{
     rows: []
@@ -33,75 +52,88 @@ return{
     calcH: function(){
         //manhattan
         _.each(this.nodes, function (node) {
-            var colVals = [node.col, pathVars.end.col].sort(),
-                rowVals = [node.row, pathVars.end.row].sort();
-
-            node.hVal = (colVals[1] - colVals[0]) + (rowVals[1] - rowVals[0]);
+            node.hVal = Math.abs(node.col - pathVars.end.col) + Math.abs(node.row - pathVars.end.row);
         });
     }
     ,
     calcG: function(node){
-        var total = 9;
-        for (var i = 0; i < total; i++){
-            var rowNum = total + -Math.floor((32 - i) / 3),
-                curRow = this.rows[node.row + rowNum];
-            if(!curRow) continue;
+        pathVars.current = node;
+        var neighbours = 9, curRow = undefined, curNode = undefined;
+        for (var i = 0; i < neighbours; i++){
+            var rowNum = neighbours + -Math.floor((32 - i) / 3);
+            if((curRow = this.rows[node.row + rowNum]) == undefined) continue;
 
-            var colNum = node.col + (i % 3) - 1,
-                curNode = curRow[colNum];
-            if(!curNode) continue;
-
-                                         //on closed list
+            var colNum = node.col + (i % 3) - 1;
+            if((curNode = curRow[colNum]) == undefined) continue;
+                                        //obstacle
+            if(_.contains(pathVars.obstacles, curNode)) continue;
+                                        //on closed list
             if(_.contains(pathVars.closedList, curNode)) continue;
+                                        //parent node
+            if(_.isEqual(curNode, node)) pathVars.closedList.push(curNode);
+            else {                      //neighbour node
+                if(!determineParent(node, curNode)) continue;
+                                        //only add if not contains
+                if(!_.contains(pathVars.openList, curNode)) pathVars.openList.push(curNode);
+                                        //g value gets assigned here
+                if(isDiagonal(node, curNode)) curNode.gVal = node.gVal + pathVars.diagMoveCost;
+                else curNode.gVal = node.gVal + pathVars.upDownMoveCost;
 
-            if(_.isEqual(curNode, node)){//parent node
-                pathVars.closedList.push(curNode);
-                curNode.setScale({x: 1, y: 1, z: 1});
-            } else {                     //neighbour node
-                determineParent(node, curNode);
-                                         //only add if not contains
-                if(!_.contains(pathVars.openList, curNode))
-                    pathVars.openList.push(curNode);
-
-                curNode.setScale({x: 0.3, y: 1, z: 0.3});
-                                         //values get assigned here
-                if(isDiagonal(node, curNode))
-                    curNode.gVal = pathVars.diagG_Val;
-                else curNode.gVal = pathVars.upDownG_Val;
-
-                curNode.setScale({x: 0.3, y: 1, z: 0.3});
                 this.calcF(curNode);
             }
         }
-        this.chooseNext();
+        //this.chooseNext();
+        setTimeout(_.bind(this.chooseNext, this), pathUtils.stepTime);
     }
     ,
-    calcF: function(node){ node.fVal = node.hVal + node.gVal; }
+    calcF: function(node){ node.fVal = node.hVal + node.gVal;}
     ,
     chooseNext:function(){
         pathVars.openList = _.sortBy(pathVars.openList, "fVal");
         var nextNode = _.first(pathVars.openList);
         pathVars.openList.shift();
-        //console.log(nextNode);
         pathVars.closedList.push(nextNode);
-        nextNode.setScale({x: 0.5, y: 2, z: 0.5});
-        nextNode.setColor(0xffffff);
+        nextNode.setColor(sceneManager.get("exploredC"));
         if(_.isEqual(nextNode, pathVars.end)){
-            nextNode.setColor(0x00ff00);
-            nextNode.setScale({x: 0.5, y: 30, z: 0.5});
+            pathVars.end.setColor(sceneManager.get("endC"));
+            pathVars.current = pathVars.end;
+            this.drawPath();
             return;
         }
         this.calcG(nextNode);
-
+    }
+    ,
+    addNode: function(node){ this.nodes.push(node); }
+    ,
+    addObstacle: function(obs){
+        pathVars.obstacles.push(obs);
+        obs.mesh.visible = false;
     }
     ,
     start: function(){
         this.calcH();
         pathVars.closedList.push(pathVars.start);
         this.calcG(pathVars.start);
-        pathVars.start.setScale({x: 0.5, y: 30, z: 0.5});
-        pathVars.start.setColor(0xff0000);
-        //this.calcG(pathVars.end);
+        pathVars.start.gVal = 0;
+        pathVars.start.setColor(sceneManager.get("startC"));
+        pathVars.end.setColor(sceneManager.get("endC"));
+    }
+    ,
+    drawPath: function () {
+        while(!_.isEqual(pathVars.current, pathVars.start)){
+            pathVars.current.setColor(sceneManager.get("pathC"));
+            pathVars.current = pathVars.current.parentNode;
+        }
+    }
+    ,
+    reset: function(){
+        _.each(this.nodes, function (node) {
+            node.setColor(sceneManager.get("unexploredC"));
+            node.reset();
+        });
+        pathVars.closedList = [];
+        pathVars.openList = [];
+
     }
 }
 });
