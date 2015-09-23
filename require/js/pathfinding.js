@@ -54,7 +54,7 @@ define(["underscore", "sceneManager", "models"], function(underscore, sceneManag
 
                 var line = new THREE.Line( geometry, material );
                 pathVars.pathLine = line;
-                sceneManager.add(line);
+                //sceneManager.add(line);
             }
         }
     }();
@@ -76,33 +76,36 @@ return{
     }
     ,
     calcG: function(node){
-        if(!node) return;
-        pathVars.current = node;
-        var neighbours = 9, curRow = undefined, curNode = undefined;
-        for (var i = 0; i < neighbours; i++){
-            var rowNum = neighbours + -Math.floor((32 - i) / 3);
-            if((curRow = this.rows[node.row + rowNum]) == undefined) continue;
+        do{
+            //if(!node) continue;
+            pathVars.current = node;
+            var neighbours = 9, curRow = undefined, curNode = undefined;
+            for (var i = 0; i < neighbours; i++){
+                var rowNum = neighbours + -Math.floor((32 - i) / 3);
+                if((curRow = this.rows[node.row + rowNum]) == undefined) continue;
 
-            var colNum = node.col + (i % 3) - 1;
-            if((curNode = curRow[colNum]) == undefined) continue;
-                                        //obstacle
-            if(_.contains(pathVars.obstacles, curNode)) continue;
-                                        //on closed list
-            if(_.contains(pathVars.closedList, curNode)) continue;
-                                        //parent node
-            if(_.isEqual(curNode, node)) pathVars.closedList.push(curNode);
-            else {                      //neighbour node
-                if(!determineParent(node, curNode)) continue;
-                                        //only add if not contains
-                if(!_.contains(pathVars.openList, curNode)) pathVars.openList.push(curNode);
-                                        //g value gets assigned here
-                if(isDiagonal(node, curNode)) curNode.gVal = node.gVal + pathVars.diagMoveCost;
-                else curNode.gVal = node.gVal + pathVars.upDownMoveCost;
+                var colNum = node.col + (i % 3) - 1;
+                if((curNode = curRow[colNum]) == undefined) continue;
+                                            //obstacle
+                if(_.contains(pathVars.obstacles, curNode)) continue;
+                                            //on closed list
+                if(_.contains(pathVars.closedList, curNode)) continue;
+                                            //parent node
+                if(_.isEqual(curNode, node)) pathVars.closedList.push(curNode);
+                else {                      //neighbour node
+                    if(!determineParent(node, curNode)) continue;
+                                            //only add if not contains
+                    if(!_.contains(pathVars.openList, curNode)) pathVars.openList.push(curNode);
+                                            //g value gets assigned here
+                    if(isDiagonal(node, curNode)) curNode.gVal = node.gVal + pathVars.diagMoveCost;
+                    else curNode.gVal = node.gVal + pathVars.upDownMoveCost;
 
-                this.calcF(curNode);
+                    this.calcF(curNode);
+                }
             }
-        }
-        this.chooseNext();
+        } while((node = this.chooseNext()) != true && node != undefined);
+        return this.getPath();
+        //this.chooseNext();
         //setTimeout(_.bind(this.chooseNext, this), pathUtils.stepTime);
     }
     ,
@@ -115,10 +118,11 @@ return{
         pathVars.closedList.push(nextNode);
         if(_.isEqual(nextNode, pathVars.end)){
             pathVars.current = pathVars.end;
-            this.drawPath();
-            return;
+            return true;
+            //return this.getPath();
         }
-        this.calcG(nextNode);
+        return nextNode;
+        //this.calcG(nextNode);
     }
     ,
     addNode: function(node){ this.nodes.push(node); }
@@ -126,37 +130,40 @@ return{
     addObstacle: function(obs){
         if(_.contains(pathVars.obstacles, obs)) return;
         pathVars.obstacles.push(obs);
-        //obs.mesh.visible = false;
     }
     ,
     setStart: function(node){ pathVars.start = this.rows[node.x][node.y]; }
     ,
     setEnd: function(node){ pathVars.end = this.rows[node.x][node.y]; }
     ,
-    start: function(){
+    start: function(startNode){
+        this.reset();
         this.calcH();
-        pathVars.closedList.push(pathVars.start);
-        this.calcG(pathVars.start);
-        pathVars.start.gVal = 0;
+        if(!startNode) startNode = pathVars.start;
+        pathVars.closedList.push(startNode);
+        startNode.gVal = 0;
+        return this.calcG(startNode);
     }
     ,
-    drawPath: function () {
+    getPath: function () {
         var path = [];
         while(!_.isEqual(pathVars.current, pathVars.start)){
             path.push(pathVars.current);
-            pathVars.current = pathVars.current.parentNode;
+            //console.log(pathVars.current.parentNode);
+            if(pathVars.current.parentNode)pathVars.current = pathVars.current.parentNode;
+            else break;
         }
-        path.push(pathVars.start);
-        pathUtils.drawPathLine(path);
+        //pathUtils.drawPathLine(path);
         path.reverse();
         pathVars.path = path;
+        return path;
     }
     ,
     reset: function(){
         _.each(this.nodes, function (node) {
             node.reset();
         });
-        sceneManager.remove(pathVars.pathLine);
+        //sceneManager.remove(pathVars.pathLine);
         pathVars.closedList = [];
         pathVars.openList = [];
     }

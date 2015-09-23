@@ -19,13 +19,8 @@ require.config({
    }
    ,
    shim: {
-       fileSaver: {
-           exports: "fileSaver"
-       }
-       ,
-       tween: {
-           exports: "tween"
-       }
+       fileSaver: { exports: "fileSaver" },
+       tween: { exports: "tween" }
    }
 });
 

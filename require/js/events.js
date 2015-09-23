@@ -111,7 +111,7 @@ define(["jquery", "pathfinding", "sceneManager", "gameManager", "fileSaver", "ma
             addObstacle: function(node){
                 var map = maps.getMap();
                 node.tile = this.selectedMap;
-                //node.setColor(0x00ff00);
+                node.setColor(0x00ff00);
                 map.addObstacles(node);
                 node.mesh.material.map = sceneManager.get(this.selectedMap);
                 node.mesh.material.needsUpdate = true;
@@ -121,10 +121,11 @@ define(["jquery", "pathfinding", "sceneManager", "gameManager", "fileSaver", "ma
                 var map = maps.getMap();
 
                 map.rows = [];
-                map.obstacles = [];
+                //map.obstacles = [];
 
                 _.each(pathfinding.rows, function(row){ map.addRow(row); });
                 _.each(pathfinding.get("obstacles"), function(obs){ map.addObstacles(obs); });
+                //console.log(map.obstacles)
                 var json = JSON.stringify(map, null, 1);
 
                 var blob = new Blob([json], {type: "application/json"});

@@ -1,5 +1,5 @@
-define(["models", "sceneManager", "pathfinding", "underscore", "maps", "animate"],
-    function(models, sceneManager, pathfinding, underscore, maps, animate) {
+define(["models", "sceneManager", "pathfinding", "underscore", "maps", "animate", "tween"],
+    function(models, sceneManager, pathfinding, underscore, maps, animate, tween) {
 
     function makeSprite(text){
         //text = "h:" + text;
@@ -40,7 +40,7 @@ define(["models", "sceneManager", "pathfinding", "underscore", "maps", "animate"
 
     gmPublic.startGame = function(){
         gmPublic.generateMap(maps.getMap());
-        pathfinding.start();
+        //pathfinding.start();
         gmPublic.spawnEnemy();
         //animate.Updater.addHandler(sceneManager.addRain());
         //animate.Updater.addHandler(sceneManager.addWater());
@@ -114,6 +114,8 @@ define(["models", "sceneManager", "pathfinding", "underscore", "maps", "animate"
                     l * map.tileInterval +
                     totalHeightOffset / 2);
 
+                //node.mesh.position.setY(_.random(-0.5, 0.5));
+
                 pathfinding.addNode(node);
                 row.push(node);
                 sceneManager.nodeMeshes.push(node.mesh);
@@ -145,37 +147,63 @@ define(["models", "sceneManager", "pathfinding", "underscore", "maps", "animate"
 
     gmPublic.spawnEnemy = function(){
         setInterval(function(){
-            var e = new Enemy({speed: 2.5});
-            sceneManager.add(e.mesh);
-            e.move();
-        }, 3000);
+            new Enemy({speed: 5.5});
+        }, 100);
     };
 
     var Enemy = function(arg){
-        //TODO: optimize so start position doesn't get called every time
-        this.mesh = models.returnPlayer();
+        /*TODO: optimize so start position doesn't get called every time, probably just make a class module*/
+
         var startPos = pathfinding.get("start").mesh.position;
+        this.mesh = models.returnPlayer();
         this.mesh.position.setX(startPos.x);
         this.mesh.position.setZ(startPos.z);
         this.speed = arg.speed;
+        var moveTween = new TWEEN.Tween( this.mesh.position),
+            _this = this,
+            path = pathfinding.start(pathfinding.get("start")),//pathfinding.get("path"),
+            distance = path.length,
+            baseTimePerTile = 5000,
+            timeOfBirth = undefined,
+            totalTime = (distance * baseTimePerTile) / this.speed,
+            timePerTile = ((distance * baseTimePerTile) / this.speed) / distance;
 
+        sceneManager.add(this.mesh);
         this.move = function(){
-            var tween = new TWEEN.Tween( this.mesh.position),
-                mesh = this.mesh, speed = this.speed,
-                path = pathfinding.get("path"),
-                xPosArr = [], yPosArr = [], zPosArr = [];
+            var mesh = this.mesh, xPosArr = [], yPosArr = [], zPosArr = [];
 
             _.each(path, function(node){
                 xPosArr.push(node.mesh.position.x);
-                yPosArr.push(node.mesh.position.y + mesh.height / 2);
+                yPosArr.push(node.mesh.position.y + _this.mesh.height / 2 );
                 zPosArr.push(node.mesh.position.z);
             });
-            tween.to({ x: xPosArr, y: yPosArr, z: zPosArr }, 100000 / speed );
-            tween.onComplete(function(){
+            moveTween.to({ x: xPosArr, y: yPosArr, z: zPosArr }, totalTime);
+
+            moveTween.onStart(function(){
+                timeOfBirth = _.now();
+            });
+
+            moveTween.onComplete(function(){
                 sceneManager.remove(mesh);
             });
-            tween.start();
+            //moveTween.interpolation( TWEEN.Interpolation.Bezier );
+            moveTween.start();
         };
+        //console.log(this.move)
+        this.move();
+
+        this.stop = function(){
+            tween.remove(moveTween);
+        };
+
+        this.reroute = function(){
+            path = pathfinding.start(getCurrentNode());
+            _this.move();
+        };
+
+        function getCurrentNode (){
+            return path[Math.round((_.now() - timeOfBirth) / timePerTile)];
+        }
     };
 
     return gmPublic;

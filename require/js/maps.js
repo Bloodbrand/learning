@@ -2,7 +2,7 @@ define([], function(){
     var Map = function(data){
         this.width = data.width;
         this.length = data.length;
-        this.tileInterval = 0.1;
+        this.tileInterval = 0.5;
         this.obstacles = (data.obstacles || []);
         this.rows = data.rows;
         this.start = undefined;
@@ -11,7 +11,7 @@ define([], function(){
         this.addRow = function(row){
             var cleanedRow = [];
             _.each(row, function(node){
-                cleanedRow.push(_.omit(node, 'mesh'));
+                cleanedRow.push(_.omit(node, ['mesh', 'parentNode']));
             });
             this.rows.push(cleanedRow);
         };
@@ -31,10 +31,10 @@ define([], function(){
         }
     };
 
-    var map1 = new Map({width: 10, length: 10});
-    //var map1 = new Map(parseJSONfile("maps/1.json"));
-    map1.setStart({x: 0, y: 0});
-    map1.setEnd({x: 9, y: 9});
+    //var map1 = new Map({width: 10, length: 10});
+    var map1 = new Map(parseJSONfile("maps/2.json"));
+    map1.setStart({x: 9, y: 9});
+    map1.setEnd({x: 0, y: 0});
 
     function parseJSONfile(file) {
         var request = new XMLHttpRequest();
