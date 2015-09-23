@@ -1,13 +1,16 @@
-define(["underscore", "sceneManager"], function(underscore, sceneManager){
+define(["underscore", "sceneManager", "models"], function(underscore, sceneManager, models){
     var pathVars = {
-        upDownMoveCost: 10,
-        diagMoveCost: 14,
+        upDownMoveCost: 1.0,
+        diagMoveCost: Infinity,//1.4,//
         obstacles: [],
         openList: [],
         closedList: [],
         start: undefined,
         current: undefined,
-        end: undefined
+        end: undefined,
+        pathLine: undefined,
+        movement: 5,
+        path: []
     };
 
     function isDiagonal(node, checkNode){
@@ -30,12 +33,28 @@ define(["underscore", "sceneManager"], function(underscore, sceneManager){
 
     var pathUtils = function(){
         return{
-            stepTime: 10
+            stepTime: 100
             ,
             clearAllSprites: function(){
                 _.each(this.nodes, function(node){
                     if(node.sprite) node.mesh.remove(node.sprite);
                 })
+            }
+            ,
+            drawPathLine: function(nodes){
+                var material = new THREE.LineBasicMaterial({color: sceneManager.get("unexploredC")});
+                var materialFatigue = new THREE.LineBasicMaterial({color: sceneManager.get("startC")});
+                var geometry = new THREE.Geometry();
+
+                for (var i = 0; i < nodes.length; i++) {
+                    var curNodePos = new THREE.Vector3().copy(nodes[i].mesh.position);
+                    curNodePos.y += models.get("tile", "height");
+                    geometry.vertices.push(curNodePos);
+                }
+
+                var line = new THREE.Line( geometry, material );
+                pathVars.pathLine = line;
+                sceneManager.add(line);
             }
         }
     }();
@@ -57,6 +76,7 @@ return{
     }
     ,
     calcG: function(node){
+        if(!node) return;
         pathVars.current = node;
         var neighbours = 9, curRow = undefined, curNode = undefined;
         for (var i = 0; i < neighbours; i++){
@@ -82,8 +102,8 @@ return{
                 this.calcF(curNode);
             }
         }
-        //this.chooseNext();
-        setTimeout(_.bind(this.chooseNext, this), pathUtils.stepTime);
+        this.chooseNext();
+        //setTimeout(_.bind(this.chooseNext, this), pathUtils.stepTime);
     }
     ,
     calcF: function(node){ node.fVal = node.hVal + node.gVal;}
@@ -93,9 +113,7 @@ return{
         var nextNode = _.first(pathVars.openList);
         pathVars.openList.shift();
         pathVars.closedList.push(nextNode);
-        nextNode.setColor(sceneManager.get("exploredC"));
         if(_.isEqual(nextNode, pathVars.end)){
-            pathVars.end.setColor(sceneManager.get("endC"));
             pathVars.current = pathVars.end;
             this.drawPath();
             return;
@@ -106,34 +124,41 @@ return{
     addNode: function(node){ this.nodes.push(node); }
     ,
     addObstacle: function(obs){
+        if(_.contains(pathVars.obstacles, obs)) return;
         pathVars.obstacles.push(obs);
-        obs.mesh.visible = false;
+        //obs.mesh.visible = false;
     }
+    ,
+    setStart: function(node){ pathVars.start = this.rows[node.x][node.y]; }
+    ,
+    setEnd: function(node){ pathVars.end = this.rows[node.x][node.y]; }
     ,
     start: function(){
         this.calcH();
         pathVars.closedList.push(pathVars.start);
         this.calcG(pathVars.start);
         pathVars.start.gVal = 0;
-        pathVars.start.setColor(sceneManager.get("startC"));
-        pathVars.end.setColor(sceneManager.get("endC"));
     }
     ,
     drawPath: function () {
+        var path = [];
         while(!_.isEqual(pathVars.current, pathVars.start)){
-            pathVars.current.setColor(sceneManager.get("pathC"));
+            path.push(pathVars.current);
             pathVars.current = pathVars.current.parentNode;
         }
+        path.push(pathVars.start);
+        pathUtils.drawPathLine(path);
+        path.reverse();
+        pathVars.path = path;
     }
     ,
     reset: function(){
         _.each(this.nodes, function (node) {
-            node.setColor(sceneManager.get("unexploredC"));
             node.reset();
         });
+        sceneManager.remove(pathVars.pathLine);
         pathVars.closedList = [];
         pathVars.openList = [];
-
     }
 }
 });

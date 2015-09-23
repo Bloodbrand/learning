@@ -1,11 +1,16 @@
 <component name="ProjectDictionaryState">
   <dictionary name="Radu">
     <words>
+      <w>anim</w>
       <w>antialias</w>
+      <w>contextmenu</w>
+      <w>coord</w>
       <w>diag</w>
+      <w>ortho</w>
       <w>pathfinding</w>
       <w>reparent</w>
       <w>requirejs</w>
+      <w>reroll</w>
       <w>threex</w>
       <w>vals</w>
       <w>windowresize</w>

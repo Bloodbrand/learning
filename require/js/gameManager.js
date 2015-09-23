@@ -1,10 +1,5 @@
-define(["models", "sceneManager", "pathfinding", "underscore"],
-    function(models, sceneManager, pathfinding, underscore) {
-    var map = {
-        length: 5,
-        width: 40,
-        tileInterval: 0.2
-    };
+define(["models", "sceneManager", "pathfinding", "underscore", "maps", "animate"],
+    function(models, sceneManager, pathfinding, underscore, maps, animate) {
 
     function makeSprite(text){
         //text = "h:" + text;
@@ -41,8 +36,17 @@ define(["models", "sceneManager", "pathfinding", "underscore"],
         return gyro;
     }
 
-return{
-    makeNode: function(row, num){
+    var gmPublic = {};
+
+    gmPublic.startGame = function(){
+        gmPublic.generateMap(maps.getMap());
+        pathfinding.start();
+        gmPublic.spawnEnemy();
+        //animate.Updater.addHandler(sceneManager.addRain());
+        //animate.Updater.addHandler(sceneManager.addWater());
+    };
+
+    gmPublic.makeNode = function(row, num, tile){
         return{
             gVal: 0,
             hVal: undefined,
@@ -51,8 +55,9 @@ return{
             parentNode: undefined,
             row: row,
             col: num,
-            mesh: models.returnTile(),
+            mesh: models.returnTile(tile),
             sprite: undefined,
+            tile: tile,
             setColor: function(color){
                 this.mesh.material.color.setHex(color);
             },
@@ -74,10 +79,14 @@ return{
                 this.fVal = undefined;
                 this.parentNode = undefined;
             }
+            ,
+            populate: function(obj){
+                sceneManager.add(obj, this.mesh);
+            }
         }
-    }
-    ,
-    generateMap: function(){
+    };
+
+    gmPublic.generateMap = function(map){
         var holder = models.returnHolder(),
             tileWidth = models.get('tile', 'width'),
             tileLength = models.get('tile', 'length'),
@@ -88,7 +97,9 @@ return{
             var row = [];
 
             for(var w = 0; w < map.width; w++){
-                var node = this.makeNode(l, w);
+                var tile;
+                if(map.rows) tile = map.rows[l][w].tile;
+                var node = this.makeNode(l, w, tile);
                 node.mesh.node = node;
 
                 node.mesh.position.setX(
@@ -111,15 +122,61 @@ return{
             pathfinding.rows.push(row);
         }
 
-        //pathfinding.set("start", pathfinding.rows[14][14]);
-        //pathfinding.set("end",   pathfinding.rows[0][14]);
+        _.each(map.obstacles, function (obs) {
+            var obsNode = pathfinding.rows[obs.row][obs.col];
+            obsNode.isObstacle = true;
+            obsNode.populate(models.returnTree());
+            pathfinding.addObstacle(obsNode);
+        });
 
-        //pathfinding.addObstacle(pathfinding.rows[0][5]);
-
+        sceneManager.mapHolder = holder;
+        pathfinding.setStart(map.start);
+        pathfinding.setEnd(map.end);
         sceneManager.add(holder);
-    }
-    ,
-    random: {
-    }
-}
+    };
+
+    gmPublic.rerollMap = function () {
+        pathfinding.reset();
+        pathfinding.rows = [];
+        sceneManager.nodeMeshes = [];
+        sceneManager.remove(sceneManager.mapHolder);
+        this.generateMap();
+    };
+
+    gmPublic.spawnEnemy = function(){
+        setInterval(function(){
+            var e = new Enemy({speed: 2.5});
+            sceneManager.add(e.mesh);
+            e.move();
+        }, 3000);
+    };
+
+    var Enemy = function(arg){
+        //TODO: optimize so start position doesn't get called every time
+        this.mesh = models.returnPlayer();
+        var startPos = pathfinding.get("start").mesh.position;
+        this.mesh.position.setX(startPos.x);
+        this.mesh.position.setZ(startPos.z);
+        this.speed = arg.speed;
+
+        this.move = function(){
+            var tween = new TWEEN.Tween( this.mesh.position),
+                mesh = this.mesh, speed = this.speed,
+                path = pathfinding.get("path"),
+                xPosArr = [], yPosArr = [], zPosArr = [];
+
+            _.each(path, function(node){
+                xPosArr.push(node.mesh.position.x);
+                yPosArr.push(node.mesh.position.y + mesh.height / 2);
+                zPosArr.push(node.mesh.position.z);
+            });
+            tween.to({ x: xPosArr, y: yPosArr, z: zPosArr }, 100000 / speed );
+            tween.onComplete(function(){
+                sceneManager.remove(mesh);
+            });
+            tween.start();
+        };
+    };
+
+    return gmPublic;
 });

@@ -1,0 +1,3 @@
+define( [ './FileSaver.js'
+	], function(){
+});
