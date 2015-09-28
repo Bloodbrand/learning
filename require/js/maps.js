@@ -2,7 +2,7 @@ define([], function(){
     var Map = function(data){
         this.width = data.width;
         this.length = data.length;
-        this.tileInterval = 0.5;
+        this.tileInterval = 0;
         this.obstacles = (data.obstacles || []);
         this.rows = data.rows;
         this.start = undefined;

@@ -148,7 +148,7 @@ define(["models", "sceneManager", "pathfinding", "underscore", "maps", "animate"
     gmPublic.spawnEnemy = function(){
         setInterval(function(){
             new Enemy({speed: 5.5});
-        }, 100);
+        }, 1000);
     };
 
     var Enemy = function(arg){
