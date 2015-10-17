@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="testApp">
+<head>
+    <meta charset="UTF-8">
+    <title>angular.js</title>
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/angular-messages/angular-messages.js"></script>
+    <script src="bower_components/angular-resource/angular-resource.js"></script>
+    <link href="bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
+    <script src="js/app.js"></script>
+</head>
+<body>
+    <div class="jumbotron" ng-controller="mainController">
+        <div class="container text-center">
+                <h1>angular.js & bootstrap experiments</h1>
+            <div class="col-md-4 text-center well well-sm">
+                <h2 class="text-danger">well 1</h2>
+                <h3>col-md-4</h3>
+            </div>
+            <div class="col-md-4 text-center well well-sm">
+                <h2 class="text-info">well 2</h2>
+                <h3>col-md-4</h3>
+            </div>
+            <div class="col-md-4 text-center well well-sm">
+                <h2 class="text-warning">well 3</h2>
+                <h3>col-md-4</h3>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="container text-center">
+            <div class="row">
+                <div class="col-md-2 col-md-offset-1">row 1</div>
+                <div class="col-md-2">row 2</div>
+                <div class="col-md-2">row 3</div>
+                <div class="col-md-2">row 4</div>
+                <div class="col-md-2">row 5</div>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="container">
+            <div class="row">
+                <div class="btn btn-success col-md-2 text-center">
+                    <h2 class="text-danger">col 1</h2>
+                    <h3>btn-success</h3>
+                    <p>col-md-2</p>
+                </div>
+                <div class="btn btn-info col-md-2 col-md-offset-3 text-center">
+                    <h2 class="text-danger">btn-info</h2>
+                    <h3>btn-info</h3>
+                    <p>col-md-2</p>
+                </div>
+                <div class="btn btn-warning col-md-2 col-md-offset-3 text-center">
+                    <h2 class="text-danger">col 1</h2>
+                    <h3>btn-warning</h3>
+                    <p>col-md-2</p>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+        <div class="container">
+            <form class="col-md-3" name="myForm" role="form">
+                <p>Enter some text</p>
+                <p>ngMessages demo</p>
+                <input type="text" class="form-control" ng-model="field" name="myField" required minlength="5"/>
+                <div ng-messages="myForm.myField.$error">
+                    <div class="alert alert-warning" ng-message="required">You didn't enter a field</div>
+                    <div class="alert alert-danger" ng-message="minlength">The value entered is too short</div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>
