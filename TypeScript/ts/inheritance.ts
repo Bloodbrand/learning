@@ -67,7 +67,7 @@ class Character{
     }
 
     logAction(message: string){
-        var para = document.createElement("p");
+        var para = document.createElement("h2");
         var content = document.createTextNode(message);
         para.appendChild(content);
         this.div.appendChild(para);
@@ -113,9 +113,9 @@ class Enemy extends Character{
     }
 }
 
-var player = new Player("Radu", 100, 7);
-var silverSword = new Item("Silver sword", 3, 0);
-var copperArmor = new Item("Copper armor", 0, 2);
+var player = new Player("Radu", 100, 5);
+var silverSword = new Item("silver sword", 3, 0);
+var copperArmor = new Item("copper armor", 0, 2);
 player.lootItem(silverSword);
 player.lootItem(copperArmor);
 var spider = new Enemy("Spider", 20, 10, 5, player);

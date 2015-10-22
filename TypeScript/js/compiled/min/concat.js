@@ -1,8 +1,7 @@
-var __extends = this.__extends || function (d, b) {
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var Item = (function () {
     function Item(name, power, armor) {
@@ -58,7 +57,7 @@ var Character = (function () {
         this.logAction(this.name + " has died!");
     };
     Character.prototype.logAction = function (message) {
-        var para = document.createElement("p");
+        var para = document.createElement("h2");
         var content = document.createTextNode(message);
         para.appendChild(content);
         this.div.appendChild(para);
@@ -101,13 +100,20 @@ var Enemy = (function (_super) {
     };
     return Enemy;
 })(Character);
-var player = new Player("Radu", 100, 7);
-var silverSword = new Item("Silver sword", 3, 0);
-var copperArmor = new Item("Copper armor", 0, 2);
+var player = new Player("Radu", 100, 5);
+var silverSword = new Item("silver sword", 3, 0);
+var copperArmor = new Item("copper armor", 0, 2);
 player.lootItem(silverSword);
 player.lootItem(copperArmor);
 var spider = new Enemy("Spider", 20, 10, 5, player);
 player.speak("Hello!");
 player.addGold(15);
 player.attack(spider);
-//# sourceMappingURL=test.js.map
+
+var Weapon = (function () {
+    function Weapon() {
+        this.name = "radu";
+    }
+    return Weapon;
+})();
+var sword = new Weapon();
