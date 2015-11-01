@@ -6,11 +6,11 @@ var gulp = require('gulp'),
     plumber = require('gulp-plumber'),
     tsPath = 'ts/*.ts',
     compilePath = 'js/compiled',
-    concatPath = 'js/compiled/min',
-    dist = 'js/dist';
+    concatPath = 'js/compiled/concat',
+    minPath = 'js/compiled/min';
 
 gulp.task('uglify', ['concat'], function(){
-    return gulp.src(concatPath+'/*.js')
+    return gulp.src(concatPath+'/concat.js')
         .pipe(uglify())
         .pipe(rename({extname: '.min.js'}))
         .pipe(gulp.dest(concatPath))

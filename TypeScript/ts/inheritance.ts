@@ -108,7 +108,7 @@ class Enemy extends Character{
     }
 
     giveGold(){
-        super.logAction(player.name + " has looted " + this.goldReward + " gold from " + this.name + ".");
+        super.logAction(this.player.name + " has looted " + this.goldReward + " gold from " + this.name + ".");
         this.player.addGold(this.goldReward);
     }
 }
@@ -121,5 +121,6 @@ player.lootItem(copperArmor);
 var spider = new Enemy("Spider", 20, 10, 5, player);
 
 player.speak("Hello!");
+player.addGold(135);
 player.addGold(15);
 player.attack(spider);

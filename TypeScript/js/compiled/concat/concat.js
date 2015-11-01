@@ -95,7 +95,7 @@ var Enemy = (function (_super) {
         this.giveGold();
     };
     Enemy.prototype.giveGold = function () {
-        _super.prototype.logAction.call(this, player.name + " has looted " + this.goldReward + " gold from " + this.name + ".");
+        _super.prototype.logAction.call(this, this.player.name + " has looted " + this.goldReward + " gold from " + this.name + ".");
         this.player.addGold(this.goldReward);
     };
     return Enemy;
@@ -107,13 +107,51 @@ player.lootItem(silverSword);
 player.lootItem(copperArmor);
 var spider = new Enemy("Spider", 20, 10, 5, player);
 player.speak("Hello!");
+player.addGold(135);
 player.addGold(15);
 player.attack(spider);
 
-var Weapon = (function () {
-    function Weapon() {
-        this.name = "radu";
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+//const
+var Species;
+(function (Species) {
+    Species[Species["Human"] = 0] = "Human";
+    Species[Species["Dog"] = 1] = "Dog";
+    Species[Species["Reaper"] = 2] = "Reaper";
+})(Species || (Species = {}));
+var Friend = (function () {
+    function Friend(name, age, species) {
+        this.name = name;
+        this.age = age;
+        this.species = species;
     }
-    return Weapon;
+    ;
+    Friend.prototype.sayName = function () {
+        console.log("My name is " + this.name);
+    };
+    Friend.prototype.returnAge = function () {
+        return this.age;
+    };
+    return Friend;
 })();
-var sword = new Weapon();
+var Dog = (function (_super) {
+    __extends(Dog, _super);
+    function Dog() {
+        _super.apply(this, arguments);
+    }
+    Dog.prototype.sayName = function () {
+        console.log("woof!");
+    };
+    return Dog;
+})(Friend);
+var Radu = new Friend(["Radu", "Valentin", "Milici"], 26, Species.Human);
+var Dragonu = new Friend(["Dragonu", "AK47"], 31, Species.Human);
+var Nazara = new Friend("Nazara", 1e10, Species.Reaper);
+var Laika = new Dog("Laika", 4, Species.Dog);
+Dragonu.sayName();
+console.log(Dragonu.returnAge());
+Laika.sayName();

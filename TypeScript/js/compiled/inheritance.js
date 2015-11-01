@@ -95,7 +95,7 @@ var Enemy = (function (_super) {
         this.giveGold();
     };
     Enemy.prototype.giveGold = function () {
-        _super.prototype.logAction.call(this, player.name + " has looted " + this.goldReward + " gold from " + this.name + ".");
+        _super.prototype.logAction.call(this, this.player.name + " has looted " + this.goldReward + " gold from " + this.name + ".");
         this.player.addGold(this.goldReward);
     };
     return Enemy;
@@ -107,5 +107,6 @@ player.lootItem(silverSword);
 player.lootItem(copperArmor);
 var spider = new Enemy("Spider", 20, 10, 5, player);
 player.speak("Hello!");
+player.addGold(135);
 player.addGold(15);
 player.attack(spider);
