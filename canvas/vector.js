@@ -5,8 +5,6 @@ return{
 	draw: function(s){
 		ctx.lineWidth = 2.5;
 		ctx.font="15px Arial";
-		//ctx.setLineDash([]);
-		//v, col, ori, dash		
 
 		var v = s.v;
 		var ori = s.ori;
@@ -23,7 +21,7 @@ return{
 		var newY = height / 2 - v.y;
 		ctx.beginPath();
 
-		if(ori){
+		if(ori){//specified origin
 			var newOri = {
 				x: width / 2 + ori.x, 
 				y: height / 2 - ori.y
@@ -37,13 +35,13 @@ return{
 			ctx.moveTo(newOri.x, newOri.y);
 			ctx.lineTo(newLineTo.x, newLineTo.y);
 		}
-		else {
+		else {//unspecified origin
 			ctx.moveTo(width / 2, height / 2);
 			ctx.lineTo(newX, newY);
-		}		
-
-		if(v.y < 0) newX -= 50;
-		ctx.fillText(this.magnitude(v), newX, newY);
+			if(v.y < 0) newX -= 50;
+			if (s.name)ctx.fillText(s.name, newX, newY);
+			else ctx.fillText(this.magnitude(v), newX, newY);
+		}			
 		ctx.stroke();
     	ctx.closePath();
 	}
@@ -94,7 +92,7 @@ return{
 		var v1n = this.normalize(v1),
 			v2n = this.normalize(v2),
 			sum = this.add(v1n, v2n),
-			mag = (this.magnitude(v1) + this.magnitude(v2)) / 2; //just average of the two
+			mag = (this.magnitude(v1) + this.magnitude(v2)) / 2; 
 		return this.scale(sum, mag);
 	}
 	,
@@ -103,7 +101,7 @@ return{
 	}
 	,
 	drawGraph: function () {
-		gridSize = 10;
+		var gridSize = 10;
 		for (var w = 0.5; w < width; w += gridSize) {
 			ctx.beginPath();
 			ctx.strokeStyle = 'rgba(0,0,0,0.2)';
@@ -123,7 +121,6 @@ return{
 		ctx.moveTo(0, height / 2);
 		ctx.lineTo(width, height / 2);
 		ctx.stroke();
-
 	}
 	,
 	radToDeg: function (rad) { return rad * (180 / Math.PI) }
