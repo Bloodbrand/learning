@@ -1,126 +1,66 @@
-class Item{
-    itemName: string;
-    itemPower: number;
-    itemArmor: number;
-
-    constructor(name: string, power: number, armor: number){
-        this.itemName = name;
-        this.itemPower = power;
-        this.itemArmor = armor;
-    }
+/***********calling a base class using 'super'***********/
+class BaseClass{
+  private _title : string;
+  constructor(title : string){
+    this._title = title;
+  }
 }
 
-class Character{
-    name: string;
-    health: number;
-    armor: number = 0;
-    power: number;
-    items: Item[] = [];
-    alive: boolean = true;
-    div = document.getElementById('text');
+class ExtendsClass extends BaseClass{
+  constructor(title : string){
+    super(title);
+  }
+}
+//var test = new ExtendsClass("new ExtendsClass");
 
-    constructor(name: string, health: number, power: number){
-        this.name = name;
-        this.power = power;
-        this.health = health;
-    }
-
-    speak(message: string){
-        this.logAction(message);
-    }
-
-    showHealth(){
-        this.logAction(this.name +"'s health is " + this.health + ".");
-    }
-
-    attack(target: Character){
-        this.logAction(this.name + " attacks " + target.name + "!");
-        target.takeDamage(this.power, this);
-    }
-
-    takeDamage(amount: number, attacker: Character){
-        var damageTaken = amount - this.armor;
-        if(damageTaken < 0) damageTaken = 0;
-
-        this.health -= damageTaken;
-
-        this.logAction(this.name + " takes " + damageTaken + " damage.");
-        if(this.health <= 0) {
-            this.health = 0;
-            this.die();
-            return;
-        }
-        this.logAction(this.name + " has " + this.health + " health remaining.");
-        if(attacker.alive)this.attack(attacker);
-    }
-
-    lootItem(item: Item){
-        this.items.push(item);
-        this.power += item.itemPower;
-        this.armor += item.itemArmor;
-        this.logAction(this.name + " has looted " + item.itemName + ".");
-    }
-
-    die(){
-        this.alive = false;
-        this.logAction(this.name + " has died!");
-    }
-
-    logAction(message: string){
-        var para = document.createElement("h2");
-        var content = document.createTextNode(message);
-        para.appendChild(content);
-        this.div.appendChild(para);
-    }
+/***********overloads***********/
+class Plant{
+  constructor(){}
+  getName(nameOrId : any) : string{
+    if(typeof nameOrId == "string")
+      return "The name of this plane is: " + nameOrId;
+    else return nameOrId;
+  }
 }
 
-class Player extends Character{
-    gold: number = 0;
+class PlantInfo extends Plant{
+  constructor(){
+    super();
+  }
 
-    speak(message: string){
-        super.speak("Player " + this.name + " says: " + message);
-    }
+  getName(name : string) : string;  //signature
+  getName (id: number) : string;    //signature
+  getName(nameOrId : any) : string{ //actual function implementation
+    var studentID = super.getName(nameOrId);
+    return studentID;
+  }
+}
+/*
+var test2 = new PlantInfo();
+log(test2.getName(1)); // "1"
+log(test2.getName("Rose")); // "The name of this plane is: Rose"
+*/
 
-    die(){
-        super.die();
-        this.logAction("GAME OVER!");
-    }
+/***********overrides***********/
+class Plant_2{
+  _plant : string;
 
-    addGold(amount: number){
-        this.gold += amount;
-        super.logAction(this.name + " has a total of " + this.gold + " gold.");
-    }
+  constructor(plantName : string){
+    this._plant = plantName;
+  }
+
+  getName(){
+    return "The name of this plane is: " + this._plant;
+  }
 }
 
-class Enemy extends Character{
-    goldReward: number;
-    player: Player;
+class PlantInfo_2 extends Plant_2{
+  _plant : string;
 
-    constructor(name: string, health: number, gold: number, power: number, player: Player){
-        super(name, health, power);
-        this.goldReward = gold;
-        this.player = player;
-    }
+  constructor(plantName){
+    super(plantName);
+    this._plant = plantName;
+  }
 
-    die(){
-        super.die();
-        this.giveGold();
-    }
 
-    giveGold(){
-        super.logAction(this.player.name + " has looted " + this.goldReward + " gold from " + this.name + ".");
-        this.player.addGold(this.goldReward);
-    }
 }
-
-var player = new Player("Radu", 100, 5);
-var silverSword = new Item("silver sword", 3, 0);
-var copperArmor = new Item("copper armor", 0, 2);
-player.lootItem(silverSword);
-player.lootItem(copperArmor);
-var spider = new Enemy("Spider", 20, 10, 5, player);
-
-player.speak("Hello!");
-player.addGold(135);
-player.addGold(15);
-player.attack(spider);

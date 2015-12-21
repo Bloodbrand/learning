@@ -1,157 +1,221 @@
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+/***********standard class***********/
+var Greeter = (function () {
+    function Greeter(message) {
+        this.greeting = message;
+    }
+    Greeter.prototype.greet = function () { log(this.greeting); };
+    return Greeter;
+})();
+//var g = new Greeter("I'm a new class!");
+//g.greet();
+/***********static class***********/
+var BankAccount = (function () {
+    function BankAccount() {
+    }
+    BankAccount.getAccountNumber = function () {
+        return BankAccount.accountNumber;
+    };
+    BankAccount.accountNumber = 12341234; //private, canot access with BankAccount.accountNumber
+    return BankAccount;
+})();
+//log(BankAccount.getAccountNumber().toString());//class is not instantiated
+/***********properties***********/
+var Account_3 = (function () {
+    function Account_3() {
+        this._balance = 0;
+    }
+    Object.defineProperty(Account_3.prototype, "balance", {
+        get: function () { return this._balance; },
+        set: function (val) {
+            if (val <= 100)
+                this._balance = val;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    return Account_3;
+})();
+/*
+var a_3 = new Account_3();
+log(a_3.balance.toString()); //0
+a_3.balance = 100;
+log(a_3.balance.toString()); //100
+a_3.balance = 300;
+log(a_3.balance.toString()); //100
+*/
+/***********static properties***********/
+var Constants = (function () {
+    function Constants() {
+    }
+    Object.defineProperty(Constants, "STATIC_NUMBER", {
+        get: function () { return 1234123412341234; },
+        enumerable: true,
+        configurable: true
+    });
+    ;
+    Object.defineProperty(Constants, "STATIC_STRING", {
+        get: function () { return "test_test_test_test"; },
+        enumerable: true,
+        configurable: true
+    });
+    ;
+    return Constants;
+})();
+var Account_2 = (function () {
+    function Account_2() {
+    }
+    Object.defineProperty(Account_2.prototype, "accountInfo", {
+        get: function () {
+            return {
+                staticNumber: Constants.STATIC_NUMBER,
+                staticString: Constants.STATIC_STRING
+            };
+        },
+        enumerable: true,
+        configurable: true
+    });
+    return Account_2;
+})();
+/*
+var a_2 = new Account_2();
+log(a_2.accountInfo.staticNumber.toString());
+log(a_2.accountInfo.staticString);
+*/
+/***********revealing module pattern***********/
+var Account = function () {
+    var balance = 100;
+    var getBalance = function () {
+        log(balance.toString());
+    };
+    return {
+        getBalance: getBalance
+    };
+}(); //auto invoked
+//Account.getBalance();
+/***********constructor***********/
+var ConstructorTest = (function () {
+    function ConstructorTest(msg) {
+        this.message = msg;
+    }
+    ConstructorTest.prototype.sayMessage = function () {
+        log(this.message);
+    };
+    return ConstructorTest;
+})();
+
+/***********named function***********/
+function log(msg) {
+    var para = document.createElement("h2");
+    var content = document.createTextNode(msg);
+    para.appendChild(content);
+    document.getElementById('text').appendChild(para);
+}
+/***********anonymous function***********/
+var add = function (x, y) {
+    return x + y;
 };
-var Item = (function () {
-    function Item(name, power, armor) {
-        this.itemName = name;
-        this.itemPower = power;
-        this.itemArmor = armor;
+//log(add(3, 5).toString());
+/***********lambda function***********/
+var $ = function (id) { return document.getElementById(id); };
+/*
+same as:
+var $ = function(id){ return document.getElementById(id); }
+*/
+/***********function inside class***********/
+var Calc = (function () {
+    function Calc() {
     }
-    return Item;
+    Calc.prototype.add = function (x, y) { return x + y; }; //returns number
+    return Calc;
 })();
-var Character = (function () {
-    function Character(name, health, power) {
-        this.armor = 0;
-        this.items = [];
-        this.alive = true;
-        this.div = document.getElementById('text');
-        this.name = name;
-        this.power = power;
-        this.health = health;
+/***********optional params***********/
+function optionalParam(mandatory, optional) {
+    log(mandatory + " " + optional);
+}
+//optionalParam("Radu"); //"Radu undefined"
+//optionalParam("Radu", "Milici");
+/***********default params***********/
+function defaultParam(mandatory, _default) {
+    if (_default === void 0) { _default = "Milici"; }
+    log(mandatory + " " + _default);
+}
+//defaultParam("Radu"); //"Radu Milici"
+//defaultParam("Radu", "Cavalera"); //"Radu Cavalera"
+/***********rest params***********/
+function restParams(mandatory) {
+    var rest = [];
+    for (var _i = 1; _i < arguments.length; _i++) {
+        rest[_i - 1] = arguments[_i];
     }
-    Character.prototype.speak = function (message) {
-        this.logAction(message);
-    };
-    Character.prototype.showHealth = function () {
-        this.logAction(this.name + "'s health is " + this.health + ".");
-    };
-    Character.prototype.attack = function (target) {
-        this.logAction(this.name + " attacks " + target.name + "!");
-        target.takeDamage(this.power, this);
-    };
-    Character.prototype.takeDamage = function (amount, attacker) {
-        var damageTaken = amount - this.armor;
-        if (damageTaken < 0)
-            damageTaken = 0;
-        this.health -= damageTaken;
-        this.logAction(this.name + " takes " + damageTaken + " damage.");
-        if (this.health <= 0) {
-            this.health = 0;
-            this.die();
-            return;
-        }
-        this.logAction(this.name + " has " + this.health + " health remaining.");
-        if (attacker.alive)
-            this.attack(attacker);
-    };
-    Character.prototype.lootItem = function (item) {
-        this.items.push(item);
-        this.power += item.itemPower;
-        this.armor += item.itemArmor;
-        this.logAction(this.name + " has looted " + item.itemName + ".");
-    };
-    Character.prototype.die = function () {
-        this.alive = false;
-        this.logAction(this.name + " has died!");
-    };
-    Character.prototype.logAction = function (message) {
-        var para = document.createElement("h2");
-        var content = document.createTextNode(message);
-        para.appendChild(content);
-        this.div.appendChild(para);
-    };
-    return Character;
-})();
-var Player = (function (_super) {
-    __extends(Player, _super);
-    function Player() {
-        _super.apply(this, arguments);
-        this.gold = 0;
-    }
-    Player.prototype.speak = function (message) {
-        _super.prototype.speak.call(this, "Player " + this.name + " says: " + message);
-    };
-    Player.prototype.die = function () {
-        _super.prototype.die.call(this);
-        this.logAction("GAME OVER!");
-    };
-    Player.prototype.addGold = function (amount) {
-        this.gold += amount;
-        _super.prototype.logAction.call(this, this.name + " has a total of " + this.gold + " gold.");
-    };
-    return Player;
-})(Character);
-var Enemy = (function (_super) {
-    __extends(Enemy, _super);
-    function Enemy(name, health, gold, power, player) {
-        _super.call(this, name, health, power);
-        this.goldReward = gold;
-        this.player = player;
-    }
-    Enemy.prototype.die = function () {
-        _super.prototype.die.call(this);
-        this.giveGold();
-    };
-    Enemy.prototype.giveGold = function () {
-        _super.prototype.logAction.call(this, this.player.name + " has looted " + this.goldReward + " gold from " + this.name + ".");
-        this.player.addGold(this.goldReward);
-    };
-    return Enemy;
-})(Character);
-var player = new Player("Radu", 100, 5);
-var silverSword = new Item("silver sword", 3, 0);
-var copperArmor = new Item("copper armor", 0, 2);
-player.lootItem(silverSword);
-player.lootItem(copperArmor);
-var spider = new Enemy("Spider", 20, 10, 5, player);
-player.speak("Hello!");
-player.addGold(135);
-player.addGold(15);
-player.attack(spider);
+    log(mandatory + " " + rest.join(" "));
+}
+//restParams("Radu", "param1", "param2", "param3"); //"Radu param1 param2 param3"
 
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-//const
-var Species;
-(function (Species) {
-    Species[Species["Human"] = 0] = "Human";
-    Species[Species["Dog"] = 1] = "Dog";
-    Species[Species["Reaper"] = 2] = "Reaper";
-})(Species || (Species = {}));
-var Friend = (function () {
-    function Friend(name, age, species) {
-        this.name = name;
-        this.age = age;
-        this.species = species;
+/***********calling a base class using 'super'***********/
+var BaseClass = (function () {
+    function BaseClass(title) {
+        this._title = title;
     }
-    ;
-    Friend.prototype.sayName = function () {
-        console.log("My name is " + this.name);
-    };
-    Friend.prototype.returnAge = function () {
-        return this.age;
-    };
-    return Friend;
+    return BaseClass;
 })();
-var Dog = (function (_super) {
-    __extends(Dog, _super);
-    function Dog() {
-        _super.apply(this, arguments);
+var ExtendsClass = (function (_super) {
+    __extends(ExtendsClass, _super);
+    function ExtendsClass(title) {
+        _super.call(this, title);
     }
-    Dog.prototype.sayName = function () {
-        console.log("woof!");
+    return ExtendsClass;
+})(BaseClass);
+//var test = new ExtendsClass("new ExtendsClass");
+/***********overloads***********/
+var Plant = (function () {
+    function Plant() {
+    }
+    Plant.prototype.getName = function (nameOrId) {
+        if (typeof nameOrId == "string")
+            return "The name of this plane is: " + nameOrId;
+        else
+            return nameOrId;
     };
-    return Dog;
-})(Friend);
-var Radu = new Friend(["Radu", "Valentin", "Milici"], 26, Species.Human);
-var Dragonu = new Friend(["Dragonu", "AK47"], 31, Species.Human);
-var Nazara = new Friend("Nazara", 1e10, Species.Reaper);
-var Laika = new Dog("Laika", 4, Species.Dog);
-Dragonu.sayName();
-console.log(Dragonu.returnAge());
-Laika.sayName();
+    return Plant;
+})();
+var PlantInfo = (function (_super) {
+    __extends(PlantInfo, _super);
+    function PlantInfo() {
+        _super.call(this);
+    }
+    PlantInfo.prototype.getName = function (nameOrId) {
+        var studentID = _super.prototype.getName.call(this, nameOrId);
+        return studentID;
+    };
+    return PlantInfo;
+})(Plant);
+/*
+var test2 = new PlantInfo();
+log(test2.getName(1)); // "1"
+log(test2.getName("Rose")); // "The name of this plane is: Rose"
+*/
+/***********overrides***********/
+var Plant_2 = (function () {
+    function Plant_2(plantName) {
+        this._plant = plantName;
+    }
+    Plant_2.prototype.getName = function () {
+        return "The name of this plane is: " + this._plant;
+    };
+    return Plant_2;
+})();
+var PlantInfo_2 = (function (_super) {
+    __extends(PlantInfo_2, _super);
+    function PlantInfo_2(plantName) {
+        _super.call(this, plantName);
+        this._plant = plantName;
+    }
+    return PlantInfo_2;
+})(Plant_2);
+
+
