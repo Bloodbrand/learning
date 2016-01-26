@@ -28,7 +28,9 @@ gulp.task('typescript', function(){
         .pipe(ts({
             target: 'ES5',
             declarationFiles: false,
-            noExternalResolve: true
+            noExternalResolve: true,
+            removeComments: true,
+            module: 'amd'
         }));
     return tsResult.js.pipe(gulp.dest(compilePath));
 });

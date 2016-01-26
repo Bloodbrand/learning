@@ -1,4 +1,3 @@
-/***********standard class***********/
 var Greeter = (function () {
     function Greeter(message) {
         this.greeting = message;
@@ -6,20 +5,15 @@ var Greeter = (function () {
     Greeter.prototype.greet = function () { log(this.greeting); };
     return Greeter;
 })();
-//var g = new Greeter("I'm a new class!");
-//g.greet();
-/***********static class***********/
 var BankAccount = (function () {
     function BankAccount() {
     }
     BankAccount.getAccountNumber = function () {
         return BankAccount.accountNumber;
     };
-    BankAccount.accountNumber = 12341234; //private, canot access with BankAccount.accountNumber
+    BankAccount.accountNumber = 12341234;
     return BankAccount;
 })();
-//log(BankAccount.getAccountNumber().toString());//class is not instantiated
-/***********properties***********/
 var Account_3 = (function () {
     function Account_3() {
         this._balance = 0;
@@ -35,15 +29,6 @@ var Account_3 = (function () {
     });
     return Account_3;
 })();
-/*
-var a_3 = new Account_3();
-log(a_3.balance.toString()); //0
-a_3.balance = 100;
-log(a_3.balance.toString()); //100
-a_3.balance = 300;
-log(a_3.balance.toString()); //100
-*/
-/***********static properties***********/
 var Constants = (function () {
     function Constants() {
     }
@@ -76,12 +61,6 @@ var Account_2 = (function () {
     });
     return Account_2;
 })();
-/*
-var a_2 = new Account_2();
-log(a_2.accountInfo.staticNumber.toString());
-log(a_2.accountInfo.staticString);
-*/
-/***********revealing module pattern***********/
 var Account = function () {
     var balance = 100;
     var getBalance = function () {
@@ -90,9 +69,7 @@ var Account = function () {
     return {
         getBalance: getBalance
     };
-}(); //auto invoked
-//Account.getBalance();
-/***********constructor***********/
+}();
 var ConstructorTest = (function () {
     function ConstructorTest(msg) {
         this.message = msg;

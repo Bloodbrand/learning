@@ -1,1 +1,7 @@
-{"compileOnSave": false}
+{
+    "compileOnSave": false,
+    "compilerOptions": {
+    	"module" : "amd",
+        "removeComments": true
+    }
+}

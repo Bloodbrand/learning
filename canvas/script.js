@@ -12,8 +12,10 @@ line2.draw();
 
 line1.intersects(line2);*/
 
-var v1 = Vector.random();
-var v2 = Vector.random();
+//var v1 = Vector.random();
+//var v2 = Vector.random();
+var v1 = {x: -100, y:  100};
+var v2 = {x: -100, y: -100};
 var vBisect = Vector.bisector(v1, v2);
 var vAdd = Vector.add(v1, v2);
 var vSubtract = Vector.subtract(v1, v2);

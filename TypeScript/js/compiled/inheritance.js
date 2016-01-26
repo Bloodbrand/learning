@@ -3,7 +3,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-/***********calling a base class using 'super'***********/
 var BaseClass = (function () {
     function BaseClass(title) {
         this._title = title;
@@ -17,8 +16,6 @@ var ExtendsClass = (function (_super) {
     }
     return ExtendsClass;
 })(BaseClass);
-//var test = new ExtendsClass("new ExtendsClass");
-/***********overloads***********/
 var Plant = (function () {
     function Plant() {
     }
@@ -41,12 +38,6 @@ var PlantInfo = (function (_super) {
     };
     return PlantInfo;
 })(Plant);
-/*
-var test2 = new PlantInfo();
-log(test2.getName(1)); // "1"
-log(test2.getName("Rose")); // "The name of this plane is: Rose"
-*/
-/***********overrides***********/
 var Plant_2 = (function () {
     function Plant_2(plantName) {
         this._plant = plantName;
@@ -62,5 +53,8 @@ var PlantInfo_2 = (function (_super) {
         _super.call(this, plantName);
         this._plant = plantName;
     }
+    PlantInfo_2.prototype.getName = function () {
+        return "The name of this plant is: " + this._plant + ". The plant ID is 1234";
+    };
     return PlantInfo_2;
 })(Plant_2);
