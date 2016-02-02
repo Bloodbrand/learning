@@ -9,7 +9,7 @@ System.register(["angular2/core", "./hero-detail.component"], function(exports_1
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
     var core_1, hero_detail_component_1;
-    var AppComponent, HEROES;
+    var AppComponent;
     return {
         setters:[
             function (core_1_1) {
@@ -40,18 +40,6 @@ System.register(["angular2/core", "./hero-detail.component"], function(exports_1
                 return AppComponent;
             })();
             exports_1("AppComponent", AppComponent);
-            HEROES = [
-                { "id": 11, "name": "Mr. Nice" },
-                { "id": 12, "name": "Narco" },
-                { "id": 13, "name": "Bombasto" },
-                { "id": 14, "name": "Celeritas" },
-                { "id": 15, "name": "Magneta" },
-                { "id": 16, "name": "RubberMan" },
-                { "id": 17, "name": "Dynama" },
-                { "id": 18, "name": "Dr IQ" },
-                { "id": 19, "name": "Magma" },
-                { "id": 20, "name": "Tornado" }
-            ];
         }
     }
 });
