@@ -1,4 +1,4 @@
-var pointsNum = 5;
+var pointsNum = 15;
 var points = [];
 var triangles = [];
 
@@ -32,7 +32,7 @@ function generateCustomPoints () {
 }
 
 function generateRandomPoints () {
-	var margin = 0;
+	var margin = 10;
 	for (var i = 0; i < pointsNum; i++) {
 		points.push( 
 			new Vector2( 
@@ -50,7 +50,7 @@ function triangulate (points) {
 		for (var t = 0; t < triangles.length; t++) {
 			var curT = triangles[t];
 
-			if ( PointInTriangle(curP, curT) == true ) {
+			if ( PointInTriangle( curP, curT ) === true ) {
 
 				triangles.splice( t, 1 );
 
