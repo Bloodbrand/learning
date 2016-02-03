@@ -14,6 +14,14 @@ function PointInTriangle (pt, tri) {
     return ((b1 == b2) && (b2 == b3));    
 }
 
+function Magnitude (v) {
+    return Number(Math.sqrt( Math.pow(v.x, 2) + Math.pow(v.y, 2) ).toFixed(2));
+}
+
+function Subtract (v1, v2){
+    return { x: v1.x + -v2.x, y: v1.y + -v2.y };
+}
+
 function Vector2 (x, y) {
 	this.x = x;
 	this.y = y;
@@ -24,3 +32,4 @@ function Triangle (a, b, c) {
 	this.b = b;
 	this.c = c;
 }
+

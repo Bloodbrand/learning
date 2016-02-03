@@ -1,10 +1,10 @@
-var pointsNum = 15;
+var pointsNum = 10;
 var points = [];
 var triangles = [];
 
 makeHolderTriangle();
-//generateCustomPoints();
-generateRandomPoints();
+generateCustomPoints();
+//generateRandomPoints();
 triangulate(points);
 drawPoints(points);
 
@@ -20,19 +20,19 @@ function makeHolderTriangle () {
 function generateCustomPoints () {
 	points = [
 		new Vector2(450, 250),
-		new Vector2(300, 400),
+		/*new Vector2(300, 400),
 		new Vector2(600, 400),
 		new Vector2(600, 700),
 		new Vector2(300, 700),
 		new Vector2(450, 850),
 		new Vector2(470, 150),
 		new Vector2(430, 150),
-		new Vector2(450, 450)
+		new Vector2(450, 450)*/
 	];
 }
 
 function generateRandomPoints () {
-	var margin = 10;
+	var margin = 0;
 	for (var i = 0; i < pointsNum; i++) {
 		points.push( 
 			new Vector2( 
@@ -55,15 +55,19 @@ function triangulate (points) {
 				triangles.splice( t, 1 );
 
 				triangles.push( new Triangle(curP, curT.a, curT.b) );
+				console.log(Magnitude(Subtract(curT.b, curP)));
+				//console.log(Magnitude(Subtract(curT.a, curP)));
+				//console.log(Magnitude(curT.b));
 				triangles.push( new Triangle(curP, curT.b, curT.c) );
 				triangles.push( new Triangle(curP, curT.c, curT.a) );
+
 			}
 
 		};
 
 	};
 
-	for (var dt = 0; dt < triangles.length; dt++) 
+	for ( var dt = 0; dt < triangles.length; dt++ ) 
 		drawTriangle( triangles[dt] );
 }
 
