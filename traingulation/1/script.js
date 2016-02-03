@@ -1,49 +1,55 @@
-var pointsNum = 10;
+var pointsNum = 5;
 var points = [];
+var midpoints = [];
+var centroids = [];
 var triangles = [];
 
-makeHolderTriangle();
-generateCustomPoints();
-//generateRandomPoints();
-triangulate(points);
-drawPoints(points);
+MakeHolderTriangle();
+//GenerateCustomPoints();
+GenerateRandomPoints();
+Sort( points, "y" );
+Triangulate( points);
+//DrawPoints( points, "green", 3 );
+DrawPoints( centroids, "green", 5 );
+//DrawPoints( midpoints, "red", 5 );
 
-function makeHolderTriangle () {
-	var a = new Vector2 (width / 2, 0);
-	var b = new Vector2 (0, height);
-	var c = new Vector2 (width, height);
-	var holderTri = new Triangle (a, b, c);
-	triangles.push(holderTri);
-	drawTriangle(holderTri);
+
+function MakeHolderTriangle () {
+	var a = new Vector2 ( width / 2, 0 ) ;
+	var b = new Vector2 ( 0, height );
+	var c = new Vector2 ( width, height );
+	var holderTri = new Triangle ( a, b, c );
+	triangles.push( holderTri );
+	DrawTriangle( holderTri );
 }
 
-function generateCustomPoints () {
+function GenerateCustomPoints () {
 	points = [
 		new Vector2(450, 250),
-		/*new Vector2(300, 400),
+		new Vector2(300, 400),
 		new Vector2(600, 400),
 		new Vector2(600, 700),
 		new Vector2(300, 700),
 		new Vector2(450, 850),
 		new Vector2(470, 150),
 		new Vector2(430, 150),
-		new Vector2(450, 450)*/
+		new Vector2(450, 450)
 	];
 }
 
-function generateRandomPoints () {
+function GenerateRandomPoints () {
 	var margin = 0;
 	for (var i = 0; i < pointsNum; i++) {
 		points.push( 
 			new Vector2( 
-				randomNum(margin, width - margin), 
-				randomNum(margin, height - margin) 
+				RandomNum(margin, width - margin), 
+				RandomNum(margin, height - margin) 
 			) 
 		);
 	};
 }
 
-function triangulate (points) {
+function Triangulate (points) {
 	for (var p = 0; p < points.length; p++) {
 		var curP = points[p];
 
@@ -54,12 +60,13 @@ function triangulate (points) {
 
 				triangles.splice( t, 1 );
 
-				triangles.push( new Triangle(curP, curT.a, curT.b) );
-				console.log(Magnitude(Subtract(curT.b, curP)));
-				//console.log(Magnitude(Subtract(curT.a, curP)));
-				//console.log(Magnitude(curT.b));
-				triangles.push( new Triangle(curP, curT.b, curT.c) );
-				triangles.push( new Triangle(curP, curT.c, curT.a) );
+				var tri1 = new Triangle( curP, curT.a, curT.b );
+				var tri2 = new Triangle( curP, curT.b, curT.c );
+				var tri3 = new Triangle( curP, curT.c, curT.a );
+
+				triangles.push( tri1 );
+				triangles.push( tri2 );
+				triangles.push( tri3 );
 
 			}
 
@@ -67,7 +74,19 @@ function triangulate (points) {
 
 	};
 
-	for ( var dt = 0; dt < triangles.length; dt++ ) 
-		drawTriangle( triangles[dt] );
+	for ( var ct = 0; ct < triangles.length; ct++ ) {
+
+		var curTri = triangles[ct];
+
+		var centroid = FindCentroid( curTri );
+		//var midpoint = FindMidpoint( curTri );
+		curTri.centroid = centroid;
+
+		centroids.push( centroid );
+		//midpoints.push( midpoint );
+
+		DrawTriangle( curTri );
+		FindMidpoint( curTri );
+	}		
 }
 
