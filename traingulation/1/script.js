@@ -1,19 +1,19 @@
-var pointsNum = 50;
+var pointsNum = 100;
 var points = [];
 var midpoints = [];
 var triangles = [];
 
 MakeHolderTriangle();
-GenerateCustomPoints();
-//GenerateRandomPoints();
+//GenerateCustomPoints();
+GenerateRandomPoints();
 Sort( points, "y" );
 Triangulate( points );
 CleanHolderTri();
 Draw.Clear();
-MakeHolderTriangle( true );
+//MakeHolderTriangle( true );
 Draw.Triangles( triangles );
 
-var centroids = ArrayFromProp ( triangles, "centroid");
+var centroids = Utils.ArrayFromProp ( triangles, "centroid" );
 
 Draw.Points( points, "red", 3 );
 //FindConvexHull( points );	
@@ -62,8 +62,8 @@ function GenerateRandomPoints () {
 
 	for (var i = 0; i < pointsNum; i++) {
 
-		var chosenY = RandomNum(marginY + offsetY, height - marginY );
-		var chosenX = midX + RandomNum( -chosenY / 2 + marginX , chosenY / 2 - marginX);
+		var chosenY = Utils.RandomNum(marginY + offsetY, height - marginY );
+		var chosenX = midX + Utils.RandomNum( -chosenY / 2 + marginX , chosenY / 2 - marginX);
 
 		points.push( new Vector2( chosenX, chosenY ) );
 
@@ -111,8 +111,6 @@ function Triangulate (points) {
 		points = points.concat( [ curTri.a, curTri.b, curTri.c ]);
 		midpoints = midpoints.concat( FindMidpoint( curTri ) );
 	}	
-
-	Draw.Triangles( triangles );
 		
 }
 

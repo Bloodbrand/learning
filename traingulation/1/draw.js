@@ -5,7 +5,9 @@ var height = canvas.height, width = canvas.width;
 var Draw = function () {
 
 	function randomColor () {
-		return 'hsl(' + RandomNum(180, 210) + ',' + RandomNum(70, 100) + '%, 40%)';
+
+		return 'hsl(' + Utils.RandomNum(180, 210) + ',' + Utils.RandomNum(70, 100) + '%, 40%)';
+		
 	}
 
 	function returnDefs ( obj ) {

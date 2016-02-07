@@ -1,10 +1,31 @@
-function RandomNum ( min, max ) {
+var Utils = function () {
+return {
+    RandomNum: function ( min, max ) {
+
+        return Math.floor( Math.random() * (max - min + 1 ) + min );
+
+    }
+    ,
+    ArrayFromProp: function ( arr, prop ) {
+
+        var newArr = [];
+
+        for (var i = 0; i < arr.length; i++) 
+            newArr.push( arr[i][prop] );
+
+        return newArr;
+
+    }
+}    
+}();
+
+/*function RandomNum ( min, max ) {
 
 	return Math.floor( Math.random() * (max - min + 1 ) + min );
 
-}
+}*/
 
-function ArrayFromProp ( arr, prop ) {
+/*function ArrayFromProp ( arr, prop ) {
 
     var newArr = [];
 
@@ -13,7 +34,7 @@ function ArrayFromProp ( arr, prop ) {
 
     return newArr;
 
-}
+}*/
 
 function PointInTriangle ( pt, tri ) {
 
@@ -250,49 +271,44 @@ function CleanHolderTri () {
 }
 
 function FindConvexHull ( points ) {
+    var pts = points.slice( 0 );
+    pts.reverse();
 
-    var N = points.length;
-
-    var temp = points[0];
-    points[0] = points[1];
-    points[1] = temp;
-
-    for ( var p = 0; p < points.length; p++ ) {
-
-        points[p].hullAngle = Vector.dotProduct( points[p], points[1] );
-        //Math.atan2( (points[p].y - points[1].y), (points[p].x - points[1].y) );
-
+    for ( var p = 1; p < pts.length; p++ ) {
+        pts[p].hullAngle = Vector.radToDeg(
+            Math.atan2( pts[p].y + pts[0].y, pts[p].x + pts[0].x));
     };
 
-    points = Sort( points, "hullAngle" );
 
-    points[0] = points[ N - 1 ];
+    var hullPoints = [ pts[0], pts[1] ];
 
-    var M = 1;
+    pts = Sort( pts, "hullAngle" );
 
-    for ( var i = 2; i < N; i++ ) {
+    var m = 1;
 
-        while ( CheckCCW( points[M-1], points[M], points[i] ) <= 0 ) {
+    //for ( var sp = 2; sp < pts.length; sp++ ) {
+    for ( var sp = pts.length - 1; sp > 2; sp-- ) {       
 
-            if ( M > 1 )
-                M -= 1;
-            else if ( i == N )
+        while ( CheckCCW( points[m-1], points[m], points[sp] ) > 0 ) {
+
+            if ( m > 1 ) {
+
+                points.splice(m, 1);
+                m--;
+                sp--;
+
+            }                 
+            else if ( sp == pts.length - 1 ) 
                 break;
-            else
-                i += 1;            
+            else 
+                sp++;
 
         }
 
-        M += 1;
-
-        var temp = points[M];
-        points[M] = points[i];
-        points[i] = temp;
+        hullPoints.push( pts[m] );
+        m++;
 
     };
 
-    console.log(M)
-    points.splice(M, points.length);
-    Draw.Points( points, "red", 3 );
-
+    Draw.Points( hullPoints, "red", 3 );
 }
