@@ -3,28 +3,59 @@ var points = [];
 var midpoints = [];
 var triangles = [];
 
-MakeHolderTriangle();
-//GenerateCustomPoints();
-GenerateRandomPoints();
-Sort( points, "y" );
-Triangulate( points );
-CleanHolderTri();
-Draw.Clear();
-//MakeHolderTriangle( true );
-Draw.Triangles( triangles );
+function custom() {	
+	var startTime = Date.now();
+	resetArrays();
+	Draw.Clear();
+	MakeHolderTriangle();
+	GenerateCustomPoints();
+	Sort( points, "y" );
+	Triangulate( points );
+	CleanHolderTri();
+	Draw.Clear();
+	Draw.Triangles( triangles );
+	Draw.Points( points, "red", 3 );
+	logTime( Date.now() - startTime );
+}
 
-var centroids = Utils.ArrayFromProp ( triangles, "centroid" );
+function random () {
+	var startTime = Date.now();
+	resetArrays();
+	Draw.Clear();
+	MakeHolderTriangle();
+	GenerateRandomPoints();
+	Sort( points, "y" );
+	Triangulate( points );
+	CleanHolderTri();
+	Draw.Clear();
+	Draw.Triangles( triangles );
+	Draw.Points( points, "red", 3 );
+	logTime( Date.now() - startTime );
+}
 
-Draw.Points( points, "red", 3 );
+function resetArrays () {	
+	points.length = 0;
+	midpoints.length = 0;
+	triangles.length = 0;	
+}
+
+function logTime (time) {
+	document.getElementById("time").innerHTML = time + " ms";
+}
+
+
+
+//var centroids = Utils.ArrayFromProp ( triangles, "centroid" );
+
 //FindConvexHull( points );	
-//Draw.Points( centroids, "green", 2 );
-//Draw.Points( midpoints, "red", 5 );
+//Draw.Points( centroids, "blue", 2 );
+//Draw.Points( midpoints, "yellow", 2 );
 
 
 function MakeHolderTriangle ( dontAdd ) {
-	var a = new Vector2 ( width / 2, 0 ) ;
-	var b = new Vector2 ( 0, height );
-	var c = new Vector2 ( width, height );
+	var a = new Vector2 ( width / 2, -1000 ) ;
+	var b = new Vector2 ( -1000, height );
+	var c = new Vector2 (  2000, height );
 	var holderTri = new Triangle ( a, b, c );
 	holderTri.centroid = FindCentroid( holderTri ); 
 	holderTri = ArrangePointsCCW( holderTri )
@@ -33,23 +64,19 @@ function MakeHolderTriangle ( dontAdd ) {
 }
 
 function GenerateCustomPoints () {
-	var rows = 10;
-	var cols = 4;
-	var marginX = 340;
-	var marginY = 350;
-	var midX = width / 2;
+
+	var rows = 20;
+	var cols = 20;
+
 	var rowSize = height / rows;
-	var margin = 25;
+	var colSize = width  / cols;
 
-	for (var r = 1; r < rows; r++) {
+	for (var r = 0; r <= rows; r++) {
 
-		var curY = rowSize * r + 40;
-
-		points.push( new Vector2(midX, curY) );
+		points.push( new Vector2(0, rowSize * r) );
 
 		for (var c = 1; c <= cols; c++) {
-			points.push( new Vector2(midX + ( curY / cols ) * ( c / 2 ) - margin, curY) );
-			points.push( new Vector2(midX - ( curY / cols ) * ( c / 2 ) + margin, curY) );
+			points.push( new Vector2(colSize * c + 1, rowSize * r) );
 		};
 	};
 }
@@ -62,8 +89,10 @@ function GenerateRandomPoints () {
 
 	for (var i = 0; i < pointsNum; i++) {
 
-		var chosenY = Utils.RandomNum(marginY + offsetY, height - marginY );
-		var chosenX = midX + Utils.RandomNum( -chosenY / 2 + marginX , chosenY / 2 - marginX);
+		//var chosenY = Utils.RandomNum(marginY + offsetY, height - marginY );
+		//var chosenX = midX + Utils.RandomNum( -chosenY / 2 + marginX , chosenY / 2 - marginX);
+		var chosenY = Utils.RandomNum( 0, height );
+		var chosenX = Utils.RandomNum( 0 , width );
 
 		points.push( new Vector2( chosenX, chosenY ) );
 

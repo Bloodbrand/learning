@@ -246,10 +246,10 @@ function CheckCCW ( p1, p2, p3 ) { // ccw > 0, cwise < 0, collinear if ccw = 0
 
 }
 
-function CleanHolderTri () {    
-    var a = new Vector2 ( width / 2, 0 ) ;
-    var b = new Vector2 ( 0, height );
-    var c = new Vector2 ( width, height );
+function CleanHolderTri () { 
+    var a = new Vector2 ( width / 2, -1000 ) ;
+    var b = new Vector2 ( -1000, height );
+    var c = new Vector2 (  2000, height );
 
     for (var t = triangles.length - 1; t >= 0; t--) {
 
