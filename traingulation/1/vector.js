@@ -1,5 +1,5 @@
 var Vector = function () {
-return{
+return {
 	floatPrecision: 2
 	,
 	magnitude: function(v) {
