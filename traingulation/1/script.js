@@ -1,36 +1,40 @@
-var pointsNum = 100;
 var points = [];
 var midpoints = [];
 var triangles = [];
 
 function custom() {	
+	var rows = 30;
+	var cols = 30;
 	var startTime = Date.now();
+
 	resetArrays();
 	Draw.Clear();
 	MakeHolderTriangle();
-	GenerateCustomPoints();
+	GenerateCustomPoints( rows, cols );
 	Sort( points, "y" );
 	Triangulate( points );
 	CleanHolderTri();
 	Draw.Clear();
 	Draw.Triangles( triangles );
 	Draw.Points( points, "red", 3 );
-	logTime( Date.now() - startTime );
+	logTime( rows * cols, Date.now() - startTime );
 }
 
 function random () {
+	var pointsNum = 150;
 	var startTime = Date.now();
+
 	resetArrays();
 	Draw.Clear();
 	MakeHolderTriangle();
-	GenerateRandomPoints();
+	GenerateRandomPoints( pointsNum );
 	Sort( points, "y" );
 	Triangulate( points );
 	CleanHolderTri();
 	Draw.Clear();
 	Draw.Triangles( triangles );
 	Draw.Points( points, "red", 3 );
-	logTime( Date.now() - startTime );
+	logTime( pointsNum, Date.now() - startTime );
 }
 
 function resetArrays () {	
@@ -39,8 +43,8 @@ function resetArrays () {
 	triangles.length = 0;	
 }
 
-function logTime (time) {
-	document.getElementById("time").innerHTML = time + " ms";
+function logTime (points, time) {
+	document.getElementById("time").innerHTML = points + " points " + time + " ms";
 }
 
 
@@ -63,10 +67,7 @@ function MakeHolderTriangle ( dontAdd ) {
 	Draw.Triangle( holderTri );
 }
 
-function GenerateCustomPoints () {
-
-	var rows = 20;
-	var cols = 20;
+function GenerateCustomPoints ( rows, cols ) {
 
 	var rowSize = height / rows;
 	var colSize = width  / cols;
@@ -81,7 +82,7 @@ function GenerateCustomPoints () {
 	};
 }
 
-function GenerateRandomPoints () {
+function GenerateRandomPoints ( pointsNum ) {
 	var marginX = 25;
 	var marginY = 25;
 	var offsetY = 200;
@@ -103,6 +104,7 @@ function GenerateRandomPoints () {
 function Triangulate (points) {
 
 	for ( var p = 0; p < points.length; p++ ) {
+
 		var curP = points[p];
 		var badTriangles = [];
 
@@ -116,7 +118,9 @@ function Triangulate (points) {
 				triangles.splice( t, 1 );
 				badTriangles.push( curT );
 
-			}			
+			}		
+
+
 
 		};	
 
@@ -130,6 +134,7 @@ function Triangulate (points) {
 
 	};
 
+	/*
 	for ( var ct = 0; ct < triangles.length; ct ++ ) {
 
 		var curTri = triangles[ct];
@@ -140,6 +145,7 @@ function Triangulate (points) {
 		points = points.concat( [ curTri.a, curTri.b, curTri.c ]);
 		midpoints = midpoints.concat( FindMidpoint( curTri ) );
 	}	
+	*/
 		
 }
 
