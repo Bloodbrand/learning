@@ -9,11 +9,33 @@ return {
     ArrayFromProp: function ( arr, prop ) {
 
         var newArr = [];
+        var selectedFunction;
+
+        ( prop.constructor.name == "Array" ) ?
+            selectedFunction = cycleProps :
+            selectedFunction = singleProp;
+
 
         for (var i = 0; i < arr.length; i++) 
-            newArr.push( arr[i][prop] );
+            selectedFunction( arr[i], prop );
 
         return newArr;
+
+        function singleProp ( obj, prop ) {
+
+            newArr.push( obj[prop] );
+
+        }
+
+        function cycleProps (obj, prop) {
+
+            var propsArr = [];
+
+            for ( var p = 0; p < prop.length; p++ ) 
+                propsArr.push( obj[ prop[p] ] );
+
+            newArr = newArr.concat( propsArr );
+        }
 
     }
 }    
@@ -171,6 +193,23 @@ function FindCentroid ( tri ) {
 
 }
 
+function FindPolyCentroid ( pts ) {
+
+    var totalX = 0;
+    var totalY = 0;
+    var length = pts.length;
+
+    for ( var p = 0; p < length; p++ ) {
+
+        totalX += pts[p].x;
+        totalY += pts[p].y;
+
+    };
+
+    return new Vector2 ( totalX / length, totalY / length );
+
+}
+
 function FindMidpoint ( tri ) {
 
     var sumVecAB = Vector.add( tri.a, tri.b ) ;
@@ -223,7 +262,7 @@ function FindIntersection ( line1, line2 ) {
 
 }
 
-function ArrangePointsCCW ( tri ) {
+function ArrangePointsCCWTri ( tri ) {
 
     var pts = [ tri.a, tri.b, tri.c ];
 
@@ -237,6 +276,17 @@ function ArrangePointsCCW ( tri ) {
     tri.c = pts [0];
 
     return tri;
+    
+}
+
+function ArrangePointsCCWPoly ( pts, centroid ) {
+
+    centroid = centroid || FindPolyCentroid( pts );
+
+    for ( var p = 0; p < pts.length; p++ ) 
+        pts[p].angle = Math.atan2( (pts[p].y - centroid.y), (pts[p].x - centroid.x) );
+
+    return Sort( pts, "angle" );
     
 }
 
@@ -255,60 +305,37 @@ function CleanHolderTri () {
 
         var curT = triangles[t];
 
-        if
-            ( IsSamePoint (curT.a, a) || IsSamePoint (curT.b, a) ||  IsSamePoint(curT.c, a) )
+        if (( IsSamePoint (curT.a, a) || IsSamePoint (curT.b, a) ||  IsSamePoint(curT.c, a) ) ||
+            ( IsSamePoint (curT.a, b) || IsSamePoint (curT.b, b) ||  IsSamePoint(curT.c, b) ) ||
+            ( IsSamePoint (curT.a, c) || IsSamePoint (curT.b, c) ||  IsSamePoint(curT.c, c) ) )
                 triangles.splice( t, 1 );
-        else if
-            ( IsSamePoint (curT.a, b) || IsSamePoint (curT.b, b) ||  IsSamePoint(curT.c, b) )
-                triangles.splice( t, 1 );
-        else if
-            ( IsSamePoint (curT.a, c) || IsSamePoint (curT.b, c) ||  IsSamePoint(curT.c, c) )
-                triangles.splice( t, 1 );
-
 
     };
 
 }
 
-function FindConvexHull ( points ) {
-    var pts = points.slice( 0 );
-    pts.reverse();
+function FindHull ( triangles ) {
 
-    for ( var p = 1; p < pts.length; p++ ) {
-        pts[p].hullAngle = Vector.radToDeg(
-            Math.atan2( pts[p].y + pts[0].y, pts[p].x + pts[0].x));
-    };
+    var uniqueLines = FindUniqueLines( triangles );
 
+    var pts = Utils.ArrayFromProp ( uniqueLines, [ "v1", "v2" ] );
+    var length = pts.length;
 
-    var hullPoints = [ pts[0], pts[1] ];
+    var centroid = FindPolyCentroid( pts );    
 
-    pts = Sort( pts, "hullAngle" );
+    pts = ArrangePointsCCWPoly( pts );    
 
-    var m = 1;
+    for ( var p = length - 1; p >= 0; p -= 2 ) // eliminate duplicates
+        pts.splice( p, 1 );
 
-    //for ( var sp = 2; sp < pts.length; sp++ ) {
-    for ( var sp = pts.length - 1; sp > 2; sp-- ) {       
+    var length = pts.length;
 
-        while ( CheckCCW( points[m-1], points[m], points[sp] ) > 0 ) {
+    for ( var up = 1; up < length; up++ ) 
+        Draw.Line( new Line( pts[up - 1], pts[up] ), "red", 4 );
 
-            if ( m > 1 ) {
+    var finalLine = new Line( pts[length - 1], pts[0] );
+        Draw.Line( finalLine, "red", 4 );
 
-                points.splice(m, 1);
-                m--;
-                sp--;
+    return pts;
 
-            }                 
-            else if ( sp == pts.length - 1 ) 
-                break;
-            else 
-                sp++;
-
-        }
-
-        hullPoints.push( pts[m] );
-        m++;
-
-    };
-
-    Draw.Points( hullPoints, "red", 3 );
 }

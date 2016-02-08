@@ -30,7 +30,10 @@ var Draw = function () {
 			break;
 
 			case "Line":
-
+				return {
+					color: "black",
+					size : 1
+				}
 			break;
 
 		}
@@ -60,8 +63,14 @@ return {
 			this.Point( points[i], color, size );
 	}
 	,
-	Line: function ( line ) {
+	Line: function ( line, color, size ) {		
+		var def = returnDefs( line );
+		color = color || def.color;
+		size = size || def.size;
+
 		ctx.beginPath();
+		ctx.lineWidth = size;
+		ctx.strokeStyle = color;
 		ctx.moveTo(line.v1.x, line.v1.y);
 		ctx.lineTo(line.v2.x, line.v2.y);	
 		ctx.stroke();

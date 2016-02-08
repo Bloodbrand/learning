@@ -3,9 +3,9 @@ var midpoints = [];
 var triangles = [];
 
 function custom() {	
-	var rows = 30;
-	var cols = 30;
 	var startTime = Date.now();
+	var rows = 10;
+	var cols = 10;
 
 	resetArrays();
 	Draw.Clear();
@@ -16,13 +16,15 @@ function custom() {
 	CleanHolderTri();
 	Draw.Clear();
 	Draw.Triangles( triangles );
-	Draw.Points( points, "red", 3 );
+	FindHull( triangles );
+	//Draw.Points( points, "red", 3 );
+	Draw.Points( FindHull( triangles ), "red", 3 );	
 	logTime( rows * cols, Date.now() - startTime );
 }
 
 function random () {
-	var pointsNum = 150;
 	var startTime = Date.now();
+	var pointsNum = 50;
 
 	resetArrays();
 	Draw.Clear();
@@ -33,13 +35,14 @@ function random () {
 	CleanHolderTri();
 	Draw.Clear();
 	Draw.Triangles( triangles );
-	Draw.Points( points, "red", 3 );
+	//Draw.Points( points, "red", 3 );
+	Draw.Points( FindHull( triangles ), "red", 3 );	
 	logTime( pointsNum, Date.now() - startTime );
 }
 
 function resetArrays () {	
-	points.length = 0;
-	midpoints.length = 0;
+	points.length = 
+	midpoints.length = 
 	triangles.length = 0;	
 }
 
@@ -62,42 +65,36 @@ function MakeHolderTriangle ( dontAdd ) {
 	var c = new Vector2 (  2000, height );
 	var holderTri = new Triangle ( a, b, c );
 	holderTri.centroid = FindCentroid( holderTri ); 
-	holderTri = ArrangePointsCCW( holderTri )
+	//holderTri = ArrangePointsCCWTri( holderTri )
 	if( !dontAdd ) triangles.push( holderTri );
 	Draw.Triangle( holderTri );
 }
 
 function GenerateCustomPoints ( rows, cols ) {
 
-	var rowSize = height / rows;
-	var colSize = width  / cols;
+	var margin = 50;
+	var rowSize = ( height - margin * 2 ) / rows;
+	var colSize = ( width  - margin * 2) / cols;
 
-	for (var r = 0; r <= rows; r++) {
+	for ( var r = 0; r <= rows; r++ ) {
 
-		points.push( new Vector2(0, rowSize * r) );
+		points.push( new Vector2(margin, rowSize * r + margin) );
 
-		for (var c = 1; c <= cols; c++) {
-			points.push( new Vector2(colSize * c + 1, rowSize * r) );
-		};
+		for ( var c = 1; c <= cols; c++ ) 
+			points.push( new Vector2( colSize * c + margin + 1, rowSize * r + margin ) );
 	};
 }
 
 function GenerateRandomPoints ( pointsNum ) {
-	var marginX = 25;
-	var marginY = 25;
-	var offsetY = 200;
-	var midX = width / 2;
+	var margin = 50;
 
-	for (var i = 0; i < pointsNum; i++) {
+	for ( var i = 0; i < pointsNum; i++ ) 
 
-		//var chosenY = Utils.RandomNum(marginY + offsetY, height - marginY );
-		//var chosenX = midX + Utils.RandomNum( -chosenY / 2 + marginX , chosenY / 2 - marginX);
-		var chosenY = Utils.RandomNum( 0, height );
-		var chosenX = Utils.RandomNum( 0 , width );
-
-		points.push( new Vector2( chosenX, chosenY ) );
-
-	};
+		points.push( 
+			new Vector2( 
+			Utils.RandomNum( 0 + margin, height - margin), 
+			Utils.RandomNum( 0 + margin, width  - margin)) 
+		);
 
 }
 
@@ -140,7 +137,7 @@ function Triangulate (points) {
 		var curTri = triangles[ct];
 
 		curTri.centroid = FindCentroid( curTri ); // must find centroid before clockwise
-		curTri = ArrangePointsCCW( curTri )
+		curTri = ArrangePointsCCWTri( curTri )
 
 		points = points.concat( [ curTri.a, curTri.b, curTri.c ]);
 		midpoints = midpoints.concat( FindMidpoint( curTri ) );
