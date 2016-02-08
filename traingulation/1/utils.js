@@ -38,41 +38,31 @@ return {
         }
 
     }
+    ,
+    PointInTriangle: function( pt, tri ) {
+
+        function sign (p1, p2, p3) {
+
+            return (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
+
+        }
+
+        var b1 = sign(pt, tri.a, tri.b) < 0;
+        var b2 = sign(pt, tri.b, tri.c) < 0;
+        var b3 = sign(pt, tri.c, tri.a) < 0;
+
+        return ((b1 == b2) && (b2 == b3)); 
+        
+    }   
+    ,
+    LogTime: function (points, time) {
+
+        document.getElementById("time").innerHTML = points + " points " + time + " ms";
+        
+    } 
 }    
 }();
 
-/*function RandomNum ( min, max ) {
-
-	return Math.floor( Math.random() * (max - min + 1 ) + min );
-
-}*/
-
-/*function ArrayFromProp ( arr, prop ) {
-
-    var newArr = [];
-
-    for (var i = 0; i < arr.length; i++) 
-        newArr.push( arr[i][prop] );
-
-    return newArr;
-
-}*/
-
-function PointInTriangle ( pt, tri ) {
-
-    function sign (p1, p2, p3) {
-
-        return (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
-
-    }
-
-    var b1 = sign(pt, tri.a, tri.b) < 0;
-    var b2 = sign(pt, tri.b, tri.c) < 0;
-    var b3 = sign(pt, tri.c, tri.a) < 0;
-
-    return ((b1 == b2) && (b2 == b3)); 
-
-}
 
 function PointInCircumcircle ( pt, tri ) {
 
@@ -106,6 +96,7 @@ function FindUniqueLines ( tris ) {
     var uniqueLines = [];
 
     for ( var t = 0; t < tris.length; t++ ) 
+
         lines = lines.concat( [ tris[t].lines.AB, 
                                 tris[t].lines.BC, 
                                 tris[t].lines.CA ]);
@@ -293,49 +284,5 @@ function ArrangePointsCCWPoly ( pts, centroid ) {
 function CheckCCW ( p1, p2, p3 ) { // ccw > 0, cwise < 0, collinear if ccw = 0
 
     return (p2.x - p1.x)*(p3.y - p1.y) - (p2.y - p1.y)*(p3.x - p1.x);
-
-}
-
-function CleanHolderTri () { 
-    var a = new Vector2 ( width / 2, -1000 ) ;
-    var b = new Vector2 ( -1000, height );
-    var c = new Vector2 (  2000, height );
-
-    for (var t = triangles.length - 1; t >= 0; t--) {
-
-        var curT = triangles[t];
-
-        if (( IsSamePoint (curT.a, a) || IsSamePoint (curT.b, a) ||  IsSamePoint(curT.c, a) ) ||
-            ( IsSamePoint (curT.a, b) || IsSamePoint (curT.b, b) ||  IsSamePoint(curT.c, b) ) ||
-            ( IsSamePoint (curT.a, c) || IsSamePoint (curT.b, c) ||  IsSamePoint(curT.c, c) ) )
-                triangles.splice( t, 1 );
-
-    };
-
-}
-
-function FindHull ( triangles ) {
-
-    var uniqueLines = FindUniqueLines( triangles );
-
-    var pts = Utils.ArrayFromProp ( uniqueLines, [ "v1", "v2" ] );
-    var length = pts.length;
-
-    var centroid = FindPolyCentroid( pts );    
-
-    pts = ArrangePointsCCWPoly( pts );    
-
-    for ( var p = length - 1; p >= 0; p -= 2 ) // eliminate duplicates
-        pts.splice( p, 1 );
-
-    var length = pts.length;
-
-    for ( var up = 1; up < length; up++ ) 
-        Draw.Line( new Line( pts[up - 1], pts[up] ), "red", 4 );
-
-    var finalLine = new Line( pts[length - 1], pts[0] );
-        Draw.Line( finalLine, "red", 4 );
-
-    return pts;
 
 }

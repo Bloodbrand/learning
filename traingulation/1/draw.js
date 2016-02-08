@@ -10,7 +10,7 @@ var Draw = function () {
 		
 	}
 
-	function returnDefs ( obj ) {
+	function returnDefaults ( obj ) {
 
 		var type = obj.constructor.name;
 
@@ -43,7 +43,7 @@ var Draw = function () {
 
 return {
 	Point: function ( point, color, size ) {
-		var def = returnDefs( point );
+		var def = returnDefaults( point );
 		color = color || def.color;
 		size = size || def.size;
 		
@@ -55,7 +55,7 @@ return {
 	}
 	,
 	Points: function ( points, color, size ) {
-		var def = returnDefs( points[0] );
+		var def = returnDefaults( points[0] );
 		color = color || def.color;
 		size = size || def.size;
 
@@ -64,7 +64,7 @@ return {
 	}
 	,
 	Line: function ( line, color, size ) {		
-		var def = returnDefs( line );
+		var def = returnDefaults( line );
 		color = color || def.color;
 		size = size || def.size;
 
@@ -76,8 +76,17 @@ return {
 		ctx.stroke();
 	}
 	,
+	Lines: function ( lines, color, size ) {
+		var def = returnDefaults( lines[0] );
+		color = color || def.color;
+		size = size || def.size;
+
+		for ( var i = 0; i < lines.length; i++ ) 
+			this.Line( lines[i], color, size );
+	}
+	,
 	Triangle: function( tri, color ) {
-		var def = returnDefs( tri );
+		var def = returnDefaults( tri );
 		color = color || def.color;
 
 		this.Line( tri.lines.AB );
