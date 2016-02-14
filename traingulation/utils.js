@@ -1,8 +1,38 @@
 var Utils = function () {
+    var uniqueID = 0;
+
 return {
+    UniqueID: function () {
+        
+        return uniqueID++;
+        
+    }   
+    ,
     RandomNum: function ( min, max ) {
 
         return Math.floor( Math.random() * (max - min + 1 ) + min );
+
+    }
+    ,
+    RandomFromArray: function ( arr, num ){
+
+        var chosenNumbers = [];
+        var chosen = [];
+
+        while ( chosen.length < num ) {
+
+            var randomNum = this.RandomNum( 0, arr.length - 1 );
+
+            if ( chosenNumbers.indexOf( randomNum ) == -1 ) {
+
+                var obj = arr[ randomNum ];
+                if( obj ) chosen.push( obj );
+
+            }            
+
+        }
+
+        return chosen;
 
     }
     ,
@@ -52,6 +82,20 @@ return {
         var b3 = sign(pt, tri.c, tri.a) < 0;
 
         return ((b1 == b2) && (b2 == b3)); 
+        
+    }
+    ,
+    MakeQuadTrees: function ( points ) {
+
+        var v1 = new Vector2(0, 0);
+        var v2 = new Vector2(width, 0);
+        var v3 = new Vector2(width, height);
+        var v4 = new Vector2(0, height);
+        var newQuad = new QuadTree( v1, v2, v3, v4 );
+
+        newQuad.Start( points );
+
+        return newQuad;
         
     }   
     ,

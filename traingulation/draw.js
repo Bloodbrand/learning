@@ -35,6 +35,11 @@ var Draw = function () {
 					size : 1
 				}
 			break;
+			case "QuadTree":
+				return {
+					color: randomColor()
+				}
+			break;
 
 		}
 
@@ -50,6 +55,8 @@ return {
 		ctx.beginPath();
 		ctx.arc(point.x, point.y, size, 0, 2*Math.PI);
 	  	ctx.fillStyle = color;
+	  	ctx.strokeStyle = color;
+		ctx.lineWidth = size;
 	  	ctx.fill();
 		ctx.stroke();
 	}
@@ -61,6 +68,7 @@ return {
 
 		for (var i = 0; i < points.length; i++) 
 			this.Point( points[i], color, size );
+
 	}
 	,
 	Line: function ( line, color, size ) {		
@@ -96,7 +104,7 @@ return {
 		ctx.moveTo(tri.a.x, tri.a.y);
 		ctx.lineTo(tri.b.x, tri.b.y);
 		ctx.lineTo(tri.c.x, tri.c.y);
-		ctx.lineTo(tri.a.x, tri.a.y);	
+		ctx.closePath();
 		ctx.fillStyle = color;
 		ctx.fill();
 	}
@@ -107,6 +115,46 @@ return {
 			this.Triangle( tris[t] );
 
 	}
+	,
+	Square: function ( square, color ) {
+		var def = returnDefaults( square );
+		color = color || def.color;
+
+		var pts = square.vertices;
+
+		ctx.beginPath();
+		ctx.moveTo(pts[0].x, pts[0].y);
+		ctx.lineTo(pts[1].x, pts[1].y);
+		ctx.lineTo(pts[2].x, pts[2].y);
+		ctx.lineTo(pts[3].x, pts[3].y);
+		ctx.closePath();
+
+		ctx.fillStyle = color;
+
+		ctx.fill();
+
+	}
+	,
+	QuadTree: function ( quad, color ) {
+
+		var _this = this;
+
+		quad.children.forEach( function ( child ) {
+
+			var pts = child.vertices;
+
+			_this.Lines( [ new Line( pts[0], pts[1] ), 
+				           new Line( pts[1], pts[2] ), 
+				           new Line( pts[2], pts[3] ), 
+				           new Line( pts[3], pts[0] ) ] );
+			_this.Square( child, color );
+			_this.QuadTree( child );
+
+		});
+
+	}
+	,
+	RandomColor: randomColor
 	,
 	Clear: function () {
 

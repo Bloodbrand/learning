@@ -1,78 +1,10 @@
-function Vector2 ( x, y ) {
-    this.x = x;
-    this.y = y;
-
-    this.clone = function () {
-        return new Vector2 ( this.x, this.y );
-    }
-}
-
-function Line ( v1, v2 ) {
-    this.v1 = v1;
-    this.v2 = v2;
-    this.midpoint = undefined;
-
-    this.clone = function () {
-        return new Line ( this.v1, this.v2 );
-    }
-}
-
-function Triangle ( a, b, c ) {
-    this.a = a;
-    this.b = b;
-    this.c = c;
-
-    this.centroid = undefined;
-
-    this.lines = {
-        AB: new Line ( a, b ),
-        BC: new Line ( b, c ),
-        CA: new Line ( c, a )
-    }
-}
-
-function Matrix2 ( a, b, c, d ) {
-    this.a = a;
-    this.b = b;
-    this.c = c;
-    this.d = d;
-}
-
-function Matrix3 ( a, b, c, d, e, f, g, h, i ) {
-    this.a = a;
-    this.b = b;
-    this.c = c;
-    this.d = d;
-    this.e = e;
-    this.f = f;
-    this.g = g;
-    this.h = h;
-    this.i = i;
-}
-
-function Matrix4 ( a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p ) {
-    this.a = a;
-    this.b = b;
-    this.c = c;
-    this.d = d;
-    this.e = e;
-    this.f = f;
-    this.g = g;
-    this.h = h;
-    this.i = i;
-    this.j = j;
-    this.k = k;
-    this.l = l;
-    this.m = m;
-    this.n = n;
-    this.o = o;
-    this.p = p;
-}
-
 function Triangulation ( points ) {
     var _this = this;
     this.Points = points || [];
     this.Triangles = [];
+    this.Lines = [];            // all lines of all tris
+    this.UniqueLines = [];      // all unique lines, drawn only once, no duplicates 
+    this.NonMinSpanLines = [];  // remaining lines after min spanning tree
     this.HullPoints = [];
     this.HullLines = [];
     this.HolderTriangle = undefined; 
@@ -84,12 +16,12 @@ function Triangulation ( points ) {
 
     }());
 
-    function makeHolderTriangle ( dontAdd ) {
+    function makeHolderTriangle ( ) {
 
-        var side = 1000;
-        var a = new Vector2 ( width / 2, -side ) ;
-        var b = new Vector2 ( -side, height );
-        var c = new Vector2 ( side + width / 2, height );
+        var side = 100000;
+        var a = new Vector2 ( 0,     -side );
+        var b = new Vector2 ( -side,  side );
+        var c = new Vector2 (  side,  side );
         var holderTri = new Triangle ( a, b, c );
 
         holderTri.centroid = FindCentroid( holderTri ); 
@@ -142,7 +74,7 @@ function Triangulation ( points ) {
             for ( var ul = 0; ul < uniqueLines.length; ul++ ) {
 
                 var curL = uniqueLines[ul];
-                var tri = new Triangle( curP.clone(), curL.v1.clone(), curL.v2.clone() );
+                var tri = new Triangle( curP, curL.v1, curL.v2 );
                 this.Triangles.push( tri ); 
                      
             }
@@ -151,7 +83,7 @@ function Triangulation ( points ) {
 
         cleanHolderTriangle();        
 
-    }
+    };
 
     this.FindHull = function () {
 
@@ -178,6 +110,54 @@ function Triangulation ( points ) {
 
         return pts;
 
-    }
+    };
+
+    this.FindMinSpanTree = function () {
+
+        var mst = [];
+        var sets = [];
+
+        this.UniqueLines = this.Lines.slice(0);    
+
+        for ( var t = 0; t < this.Triangles.length; t++ ) {
+
+            var curTri = this.Triangles[t];
+            curTri.getLinesLength();
+            this.UniqueLines = this.UniqueLines.concat( curTri.getLinesArray() );
+
+        };
+
+        this.UniqueLines = Sort( this.UniqueLines, "length" );
+
+
+        for ( var l = this.UniqueLines.length - 1; l >= 1 ; l-- ) // eliminate duplicates
+
+            if( IsSameLine( this.UniqueLines[l], this.UniqueLines[l - 1] ) ) 
+
+                this.UniqueLines.splice( l, 1 );  
+
+
+        this.NonMinSpanLines = this.UniqueLines.slice(0);         
+
+         for ( var p = 0; p < this.Points.length; p++ )     // make a set for each point
+            new DisjoinedSet( this.Points[p] );
+        
+        for ( var l = 0; l < this.UniqueLines.length; l++ ) {     // Kruskal's algorithm
+
+            var curLine = this.UniqueLines[l];
+
+            if ( curLine.v1.set.disjoinedSetID !== curLine.v2.set.disjoinedSetID ) {
+
+                curLine.v1.set.Merge( curLine.v2.set );
+                mst.push ( curLine );
+                this.NonMinSpanLines[ l ] = undefined;
+
+            }
+
+        }
+        
+        return mst;
+
+    };       
 
 }
