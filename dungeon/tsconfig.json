@@ -1,0 +1,17 @@
+{
+ "atom": {
+    "rewriteTsconfig": true
+  },
+	"compileOnSave": false,
+  "buildOnSave": false,
+	"compilerOptions":{
+    	"module": "system",
+	    "target": "es5",
+    	"moduleResolution": "classic",
+	    "outDir": "js"
+	}
+	,
+  "exclude": [
+    "node_modules"
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "name": "dungeon",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "tsc": "tsc",
+    "tsc:w": "tsc -w",
+    "start": "npm run tsc:w"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "requirejs": "^2.1.22",
+    "systemjs": "^0.19.22",
+    "three": "^0.74.0"
+  },
+  "devDependencies": {
+    "typescript": "^1.7.5"
+  }
+}
