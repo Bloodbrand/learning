@@ -19,12 +19,17 @@ System.register(["three", 'animate'], function(exports_1) {
                     animate_1.Animate.Renderer.setSize(animate_1.Animate.ContainerWidth, animate_1.Animate.ContainerHeight);
                     animate_1.Animate.Container.appendChild(animate_1.Animate.Renderer.domElement);
                 };
+                Main.addCamera = function () {
+                    animate_1.Animate.Camera = new THREE.PerspectiveCamera(animate_1.Animate.FOV, animate_1.Animate.ContainerWidth / animate_1.Animate.ContainerHeight, animate_1.Animate.CamNear, animate_1.Animate.CamFar);
+                };
                 Main.Start = function (containerID) {
                     if (containerID === void 0) { containerID = "webgl"; }
                     animate_1.Animate.Container = document.getElementById(containerID);
                     animate_1.Animate.ContainerWidth = animate_1.Animate.Container.offsetWidth;
                     animate_1.Animate.ContainerHeight = animate_1.Animate.Container.offsetHeight;
                     this.addRenderer();
+                    this.addCamera();
+                    //Animate.Render();
                 };
                 return Main;
             }());
