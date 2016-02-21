@@ -35,7 +35,7 @@ export class Animate {
     if ( this.delta < this.interval ) return;
 
     this.then = this.now - ( this.delta % this.interval );
-    this.Renderer.render(this.Loader.Scene, this.Camera);
+    this.Renderer.render( this.Loader.Scene, this.Camera );
   }
 
   public static Start(){

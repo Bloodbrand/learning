@@ -30,7 +30,7 @@ function CustomTriangulation () {
 
 function RandomTriangulation () {
 	var startTime = Date.now();
-	var pointsNum = 700;
+	var pointsNum = 3;
 	var pts = GenerateRandomPoints( pointsNum );
 	var tri = new Triangulation( pts );
 
@@ -49,7 +49,9 @@ function RandomTriangulation () {
 	//Draw.Points( tri.HullPoints, "red", 3 );
 
 	var qTree = Utils.MakeQuadTrees( pts );
-	Draw.QuadTree( qTree );   
+	Draw.QuadTree( qTree ); 
+
+	console.log(qTree)  
 
 	Draw.Points( pts, "black", 4 );
 	Draw.Lines( mst, "black", 5 ); 

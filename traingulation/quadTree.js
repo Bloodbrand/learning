@@ -101,12 +101,16 @@ function QuadTree ( a, b, c, d ) {
 
             if( this.Contains(curP) ) {
 
-                if (this.containedPoints.length < this.capacity)
+                if (this.containedPoints.length < this.capacity) {
 
+                    curP.quadTree = this;
                     this.containedPoints.push( curP );
+
+                }                    
 
                 else {
 
+                    this.containedPoints.length = 0;
                     this.Divide();
                     break;
                 }

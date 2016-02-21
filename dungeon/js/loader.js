@@ -14,8 +14,11 @@ System.register(["three", 'animate'], function(exports_1) {
             Loader = (function () {
                 function Loader(map) {
                     this.Scene = new THREE.Scene();
+                    this.makeMap(map);
                     animate_1.Animate.Loader = this;
                 }
+                Loader.prototype.makeMap = function (map) {
+                };
                 return Loader;
             }());
             exports_1("Loader", Loader);

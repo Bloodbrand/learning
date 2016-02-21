@@ -1,6 +1,10 @@
 import THREE = require("three");
-import {Animate} from 'animate';
+import {Animate} from "animate";
+import {Triangulation} from "./lib/triangulation/triangulation";
+import {Geometry} from "./lib/triangulation/geometryModule";
 import {Loader} from "loader";
+import {Map} from "map";
+
 
 export class Main{
 
@@ -16,6 +20,13 @@ export class Main{
       Animate.CamNear, Animate.CamFar);
   }
 
+  static testMap(){
+    let t = new Triangulation();
+    console.log(t);
+    let m = new Map();
+    let l = new Loader(m);
+  }
+
 
   public static Start( containerID: string = "webgl" ) {
     Animate.Container = document.getElementById( containerID );
@@ -23,6 +34,7 @@ export class Main{
     Animate.ContainerHeight = Animate.Container.offsetHeight;
     this.addRenderer();
     this.addCamera();
+    this.testMap();
     //Animate.Render();
   }
 
