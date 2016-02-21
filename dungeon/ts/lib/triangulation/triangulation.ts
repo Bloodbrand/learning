@@ -5,7 +5,7 @@ import {QuadTree} from "quadTree";
 export class Triangulation{
 
   public Triangles: Geometry.Triangle[] = [];
-  public Lines: Geometry.Line[];
+  public Lines: Geometry.Line[] = [];
   public UniqueLines: Geometry.Line[];
   public NonMinSpanLines: Geometry.Line[];
   public HullPoints: Geometry.Vector2[];
@@ -19,7 +19,7 @@ export class Triangulation{
   }
 
   makeHolderTriangle(): Geometry.Triangle{
-    let a = new Geometry.Vector2 ( 0,     -this.side );
+    let a = new Geometry.Vector2 (          0,  -this.side );
     let b = new Geometry.Vector2 ( -this.side,  this.side );
     let c = new Geometry.Vector2 (  this.side,  this.side );
     let holderTri = new Geometry.Triangle ( a, b, c );
@@ -98,13 +98,12 @@ export class Triangulation{
   }
 
   public FindMinSpanTree(){
-    var mst = [];
-    var sets = [];
+    let mst: Geometry.Line[] = [];
 
     this.UniqueLines = this.Lines.slice(0);
 
-    for ( var t = 0; t < this.Triangles.length; t++ ) {
-        var curTri = this.Triangles[t];
+    for ( let t = 0; t < this.Triangles.length; t++ ) {
+        let curTri = this.Triangles[t];
         curTri.GetLinesLength();
         this.UniqueLines = this.UniqueLines.concat( curTri.GetLinesArray() );
     };
@@ -112,19 +111,17 @@ export class Triangulation{
     this.UniqueLines = Utils.Sort( this.UniqueLines, "length" );
 
 
-    for ( var l = this.UniqueLines.length - 1; l >= 1 ; l-- ) // eliminate duplicates
+    for ( let l = this.UniqueLines.length - 1; l >= 1 ; l-- ) // eliminate duplicates
         if( Utils.IsSameLine( this.UniqueLines[l], this.UniqueLines[l - 1] ) )
             this.UniqueLines.splice( l, 1 );
 
-
     this.NonMinSpanLines = this.UniqueLines.slice(0);
 
-     for ( var p = 0; p < this.Points.length; p++ )     // make a set for each point
+     for ( let p = 0; p < this.Points.length; p++ )     // make a set for each point
         new Geometry.DisjoinedSet( this.Points[p] );
 
-    for ( var l = 0; l < this.UniqueLines.length; l++ ) {     // Kruskal's algorithm
-
-        var curLine = this.UniqueLines[l];
+    for ( let l = 0; l < this.UniqueLines.length; l++ ) {     // Kruskal's algorithm
+        let curLine = this.UniqueLines[l];
 
         if ( curLine.v1.DisjoinedSet.ID !== curLine.v2.DisjoinedSet.ID ) {
             curLine.v1.DisjoinedSet.Merge( curLine.v2.DisjoinedSet );
@@ -138,9 +135,9 @@ export class Triangulation{
 
   public MakeQuadTrees ( points: Geometry.Vector2[] ) {
     let v1 = new Geometry.Vector2(0, 0);
-    let v2 = new Geometry.Vector2(this.side, 0);
-    let v3 = new Geometry.Vector2(this.side, this.side);
-    let v4 = new Geometry.Vector2(0, this.side);
+    let v2 = new Geometry.Vector2(200, 0);
+    let v3 = new Geometry.Vector2(200, 200);
+    let v4 = new Geometry.Vector2(0, 200);
     let newQuad = new QuadTree( v1, v2, v3, v4 );
 
     newQuad.Start( points );

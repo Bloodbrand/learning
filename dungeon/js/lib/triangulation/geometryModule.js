@@ -76,15 +76,15 @@ System.register(["utils"], function(exports_1) {
                 Geometry.Triangle = Triangle;
                 var DisjoinedSet = (function () {
                     function DisjoinedSet(point) {
+                        this.Points = [];
                         this.ID = utils_1.Utils.UniqueID();
-                        point.DisjoinedSet = this;
                         this.Points.push(point);
+                        point.DisjoinedSet = this;
                     }
                     DisjoinedSet.prototype.Merge = function (set) {
                         for (var i = 0; i < set.Points.length; i++) {
-                            var curPoint = set.Points[i];
-                            curPoint.DisjoinedSet = this;
-                            this.Points.push(curPoint);
+                            set.Points[i].DisjoinedSet = this;
+                            this.Points.push(set.Points[i]);
                         }
                         set = this;
                     };

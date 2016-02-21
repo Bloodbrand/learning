@@ -117,7 +117,7 @@ function Triangulation ( points ) {
         var mst = [];
         var sets = [];
 
-        this.UniqueLines = this.Lines.slice(0);    
+        this.UniqueLines = this.Lines.slice(0); 
 
         for ( var t = 0; t < this.Triangles.length; t++ ) {
 

@@ -16,7 +16,9 @@ System.register(["geometryModule", "utils"], function(exports_1) {
                     this.Children = [];
                     this.capacity = 1;
                     this.containedPoints = [];
+                    this.ID = utils_1.Utils.UniqueID();
                     this.Vertices = [a, b, c, d];
+                    this.Centroid = utils_1.Utils.FindPolyCentroid([a, b, c, d]);
                     var verticesClone = this.Vertices.slice(0);
                     utils_1.Utils.Sort(verticesClone, "x");
                     this.Left = verticesClone[0].x;
@@ -29,8 +31,8 @@ System.register(["geometryModule", "utils"], function(exports_1) {
                 QuadTree.prototype.Contains = function (p) {
                     var x = p.x;
                     var y = p.y;
-                    if ((x > this.Left && x < this.Right) &&
-                        (y < this.Top && y > this.Bottom))
+                    if ((x >= this.Left && x <= this.Right) &&
+                        (y <= this.Top && y >= this.Bottom))
                         return true;
                     else
                         return false;

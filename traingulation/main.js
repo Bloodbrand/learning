@@ -12,11 +12,11 @@ function CustomTriangulation () {
 
 	var mst = tri.FindMinSpanTree();
 
-	//Draw.Triangles( tri.Triangles );
+	Draw.Triangles( tri.Triangles );
 	//Draw.Lines( tri.HullLines, "red", 3 );
 	//Draw.Points( tri.HullPoints, "red", 3 );
 	var qTree = Utils.MakeQuadTrees( pts );
-	Draw.QuadTree( qTree );
+	//Draw.QuadTree( qTree );
 
 	Draw.Lines( mst, "black", 5 ); 
 	Draw.Points( pts, "black", 4 );
@@ -30,7 +30,7 @@ function CustomTriangulation () {
 
 function RandomTriangulation () {
 	var startTime = Date.now();
-	var pointsNum = 3;
+	var pointsNum = 20;
 	var pts = GenerateRandomPoints( pointsNum );
 	var tri = new Triangulation( pts );
 
@@ -39,19 +39,20 @@ function RandomTriangulation () {
 	tri.Triangulate();
 	//tri.FindHull();
 	var mst = tri.FindMinSpanTree();
+	//console.log(mst.length)
 
 	//var extraLines = Utils.RandomFromArray( tri.NonMinSpanLines, 1 );
 	//mst = mst.concat( extraLines );
 
 	
 	Draw.Triangles( tri.Triangles );
-	//Draw.Lines( tri.HullLines, "red", 3 );
+	Draw.Lines( tri.UniqueLines, "red", 3 );
 	//Draw.Points( tri.HullPoints, "red", 3 );
 
 	var qTree = Utils.MakeQuadTrees( pts );
-	Draw.QuadTree( qTree ); 
+	//Draw.QuadTree( qTree ); 
 
-	console.log(qTree)  
+	//console.log(qTree)  
 
 	Draw.Points( pts, "black", 4 );
 	Draw.Lines( mst, "black", 5 ); 

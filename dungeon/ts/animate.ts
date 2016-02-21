@@ -10,11 +10,14 @@ export class Animate {
   // Renderer
   public static Renderer: THREE.Renderer;
 
+  //Light
+  public static Light: THREE.Light;
+
   // Camera
   public static Camera: THREE.Camera;
   public static FOV: number = 45;
   public static CamNear: number = 1;
-  public static CamFar: number = 100;
+  public static CamFar: number = 1000;
 
   // Loader
   public static Loader: Loader;

@@ -76,21 +76,19 @@ export module Geometry{
   }
 
   export class DisjoinedSet{
-
     public ID: number;
-    public Points: Vector2[];
+    public Points: Vector2[] = [];
 
     constructor( point: Vector2 ){
       this.ID = Utils.UniqueID();
-      point.DisjoinedSet = this;
       this.Points.push(point);
+      point.DisjoinedSet = this;
     }
 
     public Merge( set: DisjoinedSet ): void{
       for ( let i = 0; i < set.Points.length; i++ ){
-        let curPoint = set.Points[i];
-        curPoint.DisjoinedSet = this;
-        this.Points.push( curPoint );
+        set.Points[i].DisjoinedSet = this;
+        this.Points.push( set.Points[i] );
       }
       set = this;
     }

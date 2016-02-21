@@ -24,7 +24,7 @@ System.register([], function(exports_1) {
                 };
                 Animate.FOV = 45;
                 Animate.CamNear = 1;
-                Animate.CamFar = 100;
+                Animate.CamFar = 1000;
                 // Delta time
                 Animate.fps = 30;
                 Animate.then = Date.now();

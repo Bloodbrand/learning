@@ -18,12 +18,16 @@ export class Main{
     Animate.Camera = new THREE.PerspectiveCamera( Animate.FOV,
       Animate.ContainerWidth / Animate.ContainerHeight,
       Animate.CamNear, Animate.CamFar);
+
+    Animate.Camera.position.y = 500;
+    Animate.Camera.lookAt(new THREE.Vector3(0,0,0));
   }
 
   static testMap(){
-    let t = new Triangulation();
-    console.log(t);
+    //let t = new Triangulation();
+    //console.log(t);
     let m = new Map();
+    //console.log(m)
     let l = new Loader(m);
   }
 
@@ -35,7 +39,7 @@ export class Main{
     this.addRenderer();
     this.addCamera();
     this.testMap();
-    //Animate.Render();
+    Animate.Start();
   }
 
 }

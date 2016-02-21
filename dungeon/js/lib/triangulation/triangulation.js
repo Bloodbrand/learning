@@ -19,6 +19,7 @@ System.register(["geometryModule", "utils", "quadTree"], function(exports_1) {
                     if (Points === void 0) { Points = []; }
                     this.Points = Points;
                     this.Triangles = [];
+                    this.Lines = [];
                     this.side = 10000;
                     this.HolderTriangle = this.makeHolderTriangle();
                     this.Triangles.push(this.HolderTriangle);
@@ -83,7 +84,6 @@ System.register(["geometryModule", "utils", "quadTree"], function(exports_1) {
                 };
                 Triangulation.prototype.FindMinSpanTree = function () {
                     var mst = [];
-                    var sets = [];
                     this.UniqueLines = this.Lines.slice(0);
                     for (var t = 0; t < this.Triangles.length; t++) {
                         var curTri = this.Triangles[t];
@@ -110,9 +110,9 @@ System.register(["geometryModule", "utils", "quadTree"], function(exports_1) {
                 };
                 Triangulation.prototype.MakeQuadTrees = function (points) {
                     var v1 = new geometryModule_1.Geometry.Vector2(0, 0);
-                    var v2 = new geometryModule_1.Geometry.Vector2(this.side, 0);
-                    var v3 = new geometryModule_1.Geometry.Vector2(this.side, this.side);
-                    var v4 = new geometryModule_1.Geometry.Vector2(0, this.side);
+                    var v2 = new geometryModule_1.Geometry.Vector2(200, 0);
+                    var v3 = new geometryModule_1.Geometry.Vector2(200, 200);
+                    var v4 = new geometryModule_1.Geometry.Vector2(0, 200);
                     var newQuad = new quadTree_1.QuadTree(v1, v2, v3, v4);
                     newQuad.Start(points);
                     return newQuad;
