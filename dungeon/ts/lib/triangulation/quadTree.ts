@@ -29,7 +29,7 @@ export class QuadTree{
     this.Right = verticesClone[3].x;
     this.Side = this.Right - this.Left;
 
-    Utils.Sort(verticesClone, "x");
+    Utils.Sort(verticesClone, "y");
     this.Bottom = verticesClone[0].y;
     this.Top = verticesClone[3].y;
   }

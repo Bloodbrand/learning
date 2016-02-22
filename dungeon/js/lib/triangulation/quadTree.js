@@ -24,7 +24,7 @@ System.register(["geometryModule", "utils"], function(exports_1) {
                     this.Left = verticesClone[0].x;
                     this.Right = verticesClone[3].x;
                     this.Side = this.Right - this.Left;
-                    utils_1.Utils.Sort(verticesClone, "x");
+                    utils_1.Utils.Sort(verticesClone, "y");
                     this.Bottom = verticesClone[0].y;
                     this.Top = verticesClone[3].y;
                 }

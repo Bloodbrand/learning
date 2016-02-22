@@ -1,4 +1,5 @@
 import {Loader} from "loader";
+import {Update} from "update";
 
 export class Animate {
 
@@ -17,7 +18,8 @@ export class Animate {
   public static Camera: THREE.Camera;
   public static FOV: number = 45;
   public static CamNear: number = 1;
-  public static CamFar: number = 1000;
+  public static CamFar: number = 10000;
+  public static CameraTarget: THREE.Vector3;
 
   // Loader
   public static Loader: Loader;
@@ -38,6 +40,7 @@ export class Animate {
     if ( this.delta < this.interval ) return;
 
     this.then = this.now - ( this.delta % this.interval );
+    Update.Tick();
     this.Renderer.render( this.Loader.Scene, this.Camera );
   }
 

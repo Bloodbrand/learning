@@ -126,6 +126,16 @@ export class Utils{
   }
 
   public static Sort ( arr: any[], prop: string ): any[] { // bubble sort
+
+    try{
+      if( !arr[0].hasOwnProperty(prop) )
+        throw("Bubble sort error! No " + prop + " property found.");
+    }
+    catch(err){
+      console.error(err);
+      return;
+    }
+
     let swapped = true;
 
     while (swapped) {
@@ -239,12 +249,16 @@ export class Utils{
     for ( var p = 0; p < pts.length; p++ )
         pts[p].PolyCCWAngle = Math.atan2( (pts[p].y - centroid.y), (pts[p].x - centroid.x) );
 
-    return this.Sort( pts, "PolyCCWAngle" );
+    let points = this.Sort( pts, "PolyCCWAngle" );
+    return points;
   }
 
   public static CheckCCW ( p1: Geometry.Vector2, p2: Geometry.Vector2, p3: Geometry.Vector2 ): number {
     // ccw > 0, cwise < 0, collinear if ccw = 0
     return (p2.x - p1.x)*(p3.y - p1.y) - (p2.y - p1.y)*(p3.x - p1.x);
   }
+
+  public static RadToDeg ( rad:number ):number { return rad * ( 180 / Math.PI ) }
+	public static DegToRad ( deg:number ):number { return deg * ( Math.PI / 180 ) }
 
 }

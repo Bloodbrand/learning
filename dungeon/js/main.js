@@ -27,8 +27,9 @@ System.register(["three", "animate", "loader", "map"], function(exports_1) {
                 };
                 Main.addCamera = function () {
                     animate_1.Animate.Camera = new THREE.PerspectiveCamera(animate_1.Animate.FOV, animate_1.Animate.ContainerWidth / animate_1.Animate.ContainerHeight, animate_1.Animate.CamNear, animate_1.Animate.CamFar);
-                    animate_1.Animate.Camera.position.y = 500;
-                    animate_1.Animate.Camera.lookAt(new THREE.Vector3(0, 0, 0));
+                    animate_1.Animate.Camera.position.set(0, 300, 0);
+                    animate_1.Animate.CameraTarget = new THREE.Vector3(100, 0, 100);
+                    animate_1.Animate.Camera.lookAt(animate_1.Animate.CameraTarget);
                 };
                 Main.testMap = function () {
                     //let t = new Triangulation();

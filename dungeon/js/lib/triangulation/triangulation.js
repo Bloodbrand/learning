@@ -46,9 +46,9 @@ System.register(["geometryModule", "utils", "quadTree"], function(exports_1) {
                     ;
                 };
                 Triangulation.prototype.Triangulate = function () {
-                    var badTriangles = [];
                     for (var p = 0; p < this.Points.length; p++) {
                         var curP = this.Points[p];
+                        var badTriangles = [];
                         for (var t = this.Triangles.length - 1; t >= 0; t--) {
                             var curT = this.Triangles[t];
                             if (utils_1.Utils.PointInCircumcircle(curP, curT) == true) {
@@ -91,7 +91,7 @@ System.register(["geometryModule", "utils", "quadTree"], function(exports_1) {
                         this.UniqueLines = this.UniqueLines.concat(curTri.GetLinesArray());
                     }
                     ;
-                    this.UniqueLines = utils_1.Utils.Sort(this.UniqueLines, "length");
+                    this.UniqueLines = utils_1.Utils.Sort(this.UniqueLines, "Length");
                     for (var l = this.UniqueLines.length - 1; l >= 1; l--)
                         if (utils_1.Utils.IsSameLine(this.UniqueLines[l], this.UniqueLines[l - 1]))
                             this.UniqueLines.splice(l, 1);
@@ -100,7 +100,7 @@ System.register(["geometryModule", "utils", "quadTree"], function(exports_1) {
                         new geometryModule_1.Geometry.DisjoinedSet(this.Points[p]);
                     for (var l = 0; l < this.UniqueLines.length; l++) {
                         var curLine = this.UniqueLines[l];
-                        if (curLine.v1.DisjoinedSet.ID !== curLine.v2.DisjoinedSet.ID) {
+                        if (curLine.v1.DisjoinedSet.ID != curLine.v2.DisjoinedSet.ID) {
                             curLine.v1.DisjoinedSet.Merge(curLine.v2.DisjoinedSet);
                             mst.push(curLine);
                             this.NonMinSpanLines[l] = undefined;
@@ -108,11 +108,11 @@ System.register(["geometryModule", "utils", "quadTree"], function(exports_1) {
                     }
                     return mst;
                 };
-                Triangulation.prototype.MakeQuadTrees = function (points) {
+                Triangulation.prototype.MakeQuadTrees = function (points, width, height) {
                     var v1 = new geometryModule_1.Geometry.Vector2(0, 0);
-                    var v2 = new geometryModule_1.Geometry.Vector2(200, 0);
-                    var v3 = new geometryModule_1.Geometry.Vector2(200, 200);
-                    var v4 = new geometryModule_1.Geometry.Vector2(0, 200);
+                    var v2 = new geometryModule_1.Geometry.Vector2(width, 0);
+                    var v3 = new geometryModule_1.Geometry.Vector2(width, height);
+                    var v4 = new geometryModule_1.Geometry.Vector2(0, height);
                     var newQuad = new quadTree_1.QuadTree(v1, v2, v3, v4);
                     newQuad.Start(points);
                     return newQuad;

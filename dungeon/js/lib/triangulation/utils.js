@@ -116,6 +116,14 @@ System.register(["geometryModule"], function(exports_1) {
                     return false;
                 };
                 Utils.Sort = function (arr, prop) {
+                    try {
+                        if (!arr[0].hasOwnProperty(prop))
+                            throw ("Bubble sort error! No " + prop + " property found.");
+                    }
+                    catch (err) {
+                        console.error(err);
+                        return;
+                    }
                     var swapped = true;
                     while (swapped) {
                         swapped = false;
@@ -201,12 +209,15 @@ System.register(["geometryModule"], function(exports_1) {
                     centroid = centroid || this.FindPolyCentroid(pts);
                     for (var p = 0; p < pts.length; p++)
                         pts[p].PolyCCWAngle = Math.atan2((pts[p].y - centroid.y), (pts[p].x - centroid.x));
-                    return this.Sort(pts, "PolyCCWAngle");
+                    var points = this.Sort(pts, "PolyCCWAngle");
+                    return points;
                 };
                 Utils.CheckCCW = function (p1, p2, p3) {
                     // ccw > 0, cwise < 0, collinear if ccw = 0
                     return (p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x);
                 };
+                Utils.RadToDeg = function (rad) { return rad * (180 / Math.PI); };
+                Utils.DegToRad = function (deg) { return deg * (Math.PI / 180); };
                 Utils.uniqueID = 0;
                 return Utils;
             }());

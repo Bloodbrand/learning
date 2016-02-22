@@ -7,7 +7,7 @@ export class Map {
 
   width: number = 200;
   height: number = 200;
-  rooms: number = 15;
+  rooms: number = 250;
 
   points: Geometry.Vector2[];
   tri: Triangulation;
@@ -16,16 +16,11 @@ export class Map {
 
   constructor(){
     this.points = this.generateRandomPoints( this.rooms );
+    //this.points = this.generateCustomPoints( this.rooms );
     this.tri = new Triangulation( this.points );
     this.tri.Triangulate();
     this.mst = this.tri.FindMinSpanTree();
-
-    let v1 = new Geometry.Vector2(0, 0);
-    let v2 = new Geometry.Vector2(this.width, 0);
-    let v3 = new Geometry.Vector2(this.width, this.height);
-    let v4 = new Geometry.Vector2(0, this.height);
-    this.quadTree = new QuadTree( v1, v2, v3, v4 );
-    this.quadTree.Start( this.points );
+    this.quadTree = this.tri.MakeQuadTrees(this.points, this.width, this.height);
   }
 
   generateRandomPoints(points: number): Geometry.Vector2[]{
@@ -39,8 +34,26 @@ export class Map {
   			Utils.RandomNum( 0 + margin, this.height  - margin ))
   		);
 
-  	Utils.Sort( pts, "y" );
-  	return pts;
+  	return Utils.Sort( pts, "y" );
+  }
+
+  generateCustomPoints(points: number): Geometry.Vector2[]{
+    let margin = 2;
+    let rows = 10;
+    let cols = 10;
+    let rowSize = ( this.height - margin * 2 ) / rows;
+    let colSize = ( this.width  - margin * 2) / cols;
+    let pts = [];
+
+    for ( let r = 0; r <= rows; r++ ) {
+      pts.push( new Geometry.Vector2(margin, rowSize * r + margin) );
+
+      for ( let c = 1; c <= cols; c++ )
+        pts.push( new Geometry.Vector2( colSize * c + margin + 1, rowSize * r + margin ) );
+
+    };
+
+    return Utils.Sort( pts, "y" );
   }
 
 }

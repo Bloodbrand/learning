@@ -1,8 +1,12 @@
-System.register([], function(exports_1) {
+System.register(["update"], function(exports_1) {
     "use strict";
+    var update_1;
     var Animate;
     return {
-        setters:[],
+        setters:[
+            function (update_1_1) {
+                update_1 = update_1_1;
+            }],
         execute: function() {
             Animate = (function () {
                 function Animate() {
@@ -15,6 +19,7 @@ System.register([], function(exports_1) {
                     if (this.delta < this.interval)
                         return;
                     this.then = this.now - (this.delta % this.interval);
+                    update_1.Update.Tick();
                     this.Renderer.render(this.Loader.Scene, this.Camera);
                 };
                 Animate.Start = function () {
@@ -24,7 +29,7 @@ System.register([], function(exports_1) {
                 };
                 Animate.FOV = 45;
                 Animate.CamNear = 1;
-                Animate.CamFar = 1000;
+                Animate.CamFar = 10000;
                 // Delta time
                 Animate.fps = 30;
                 Animate.then = Date.now();

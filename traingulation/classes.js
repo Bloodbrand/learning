@@ -21,6 +21,7 @@ function Line ( v1, v2 ) {
     this.getLength = function () {
 
         this.length = Vector.magnitude ( Vector.subtract (this.v1, this.v2) );
+        console.log(this.length)
         return this.length;
 
     };
