@@ -19,8 +19,8 @@ export class Main{
       Animate.ContainerWidth / Animate.ContainerHeight,
       Animate.CamNear, Animate.CamFar);
 
-    Animate.Camera.position.set(100, 300, 100);
-    Animate.CameraTarget = new THREE.Vector3(100,0,100);
+    Animate.Camera.position.set(0, 300, 0);
+    Animate.CameraTarget = new THREE.Vector3(0,0,0);
     Animate.Camera.lookAt(Animate.CameraTarget);
   }
 

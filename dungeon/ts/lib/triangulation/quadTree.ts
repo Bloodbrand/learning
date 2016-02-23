@@ -48,37 +48,34 @@ export class QuadTree{
   public Divide(): QuadTree[] {
     let width = this.Right - this.Left;
     let height = this.Top - this.Bottom;
-    let midwayX = this.Left + width  / 2;
-    let midwayY = this.Bottom + height / 2;
-    let middleCenterV2 = new Geometry.Vector2( midwayX, midwayY );
-    let middleTopV2 = new Geometry.Vector2( midwayX, this.Top );
-    let middleBottomV2 = new Geometry.Vector2( midwayX, this.Bottom );
+    let midwayX = Math.round(this.Left + width  / 2);
+    let midwayY = Math.round(this.Bottom + height / 2);
 
     let quad1 = new QuadTree(
         this.Vertices[0],
-        middleBottomV2,
-        middleCenterV2,
+        new Geometry.Vector2( midwayX, this.Bottom ),
+        new Geometry.Vector2( midwayX, midwayY ),
         new Geometry.Vector2( this.Left, midwayY )
     );
 
     let quad2 = new QuadTree(
-        middleBottomV2,
+        new Geometry.Vector2( midwayX, this.Bottom ),
         this.Vertices[1],
         new Geometry.Vector2( this.Right, midwayY ),
-        middleCenterV2
+        new Geometry.Vector2( midwayX, midwayY )
     );
 
     let quad3 = new QuadTree(
-        middleCenterV2,
+        new Geometry.Vector2( midwayX, midwayY ),
         new Geometry.Vector2( this.Right, midwayY ),
         this.Vertices[2],
-        middleTopV2
+        new Geometry.Vector2( midwayX, this.Top )
     );
 
     let quad4 = new QuadTree(
         new Geometry.Vector2( this.Left, midwayY ),
-        middleCenterV2,
-        middleTopV2,
+        new Geometry.Vector2( midwayX, midwayY ),
+        new Geometry.Vector2( midwayX, this.Top ),
         this.Vertices[3]
     );
 

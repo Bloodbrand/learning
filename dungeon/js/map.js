@@ -1,6 +1,5 @@
-System.register(["./lib/triangulation/triangulation", "./lib/triangulation/utils", "./lib/triangulation/geometryModule"], function(exports_1, context_1) {
+System.register(["./lib/triangulation/triangulation", "./lib/triangulation/utils", "./lib/triangulation/geometryModule"], function(exports_1) {
     "use strict";
-    var __moduleName = context_1 && context_1.id;
     var triangulation_1, utils_1, geometryModule_1;
     var Map;
     return {
@@ -17,10 +16,10 @@ System.register(["./lib/triangulation/triangulation", "./lib/triangulation/utils
         execute: function() {
             Map = (function () {
                 function Map() {
-                    this.width = 200;
-                    this.height = 200;
-                    this.rooms = 125;
-                    this.extraLines = 10;
+                    this.width = 300;
+                    this.height = 300;
+                    this.rooms = 50;
+                    this.extraLines = 0;
                     this.points = this.generateRandomPoints(this.rooms);
                     //this.points = this.generateCustomPoints( this.rooms );
                     this.tri = new triangulation_1.Triangulation(this.points);

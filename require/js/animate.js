@@ -16,6 +16,7 @@ define(["sceneManager", "underscore", "tween"], function(sceneManager, underscor
             settings.then = settings.now - (settings.delta % settings.interval);
             publicAnim.Updater.updateHandlers();
             tween.update();
+            //sceneManager.rotateCamera(settings.fps); //FUCK
             sceneManager.renderer.render(sceneManager.scene, sceneManager.camera);
         }
     }

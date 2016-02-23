@@ -1,6 +1,5 @@
-System.register(["three", 'animate', "./lib/triangulation/debug"], function(exports_1, context_1) {
+System.register(["three", 'animate', "./lib/triangulation/debug"], function(exports_1) {
     "use strict";
-    var __moduleName = context_1 && context_1.id;
     var THREE, animate_1, debug_1;
     var Loader;
     return {
@@ -17,18 +16,27 @@ System.register(["three", 'animate', "./lib/triangulation/debug"], function(expo
         execute: function() {
             Loader = (function () {
                 function Loader(map) {
+                    this.map = map;
                     animate_1.Animate.Loader = this;
                     this.Scene = new THREE.Scene();
+                    this.addHolder();
                     this.addLight();
                     this.makeMap(map);
                     debug_1.Debug.RotateCamera(this);
                 }
+                Loader.prototype.addHolder = function () {
+                    this.mapHolder = new THREE.Object3D();
+                    this.mapHolder.position.x -= this.map.width / 2;
+                    this.mapHolder.position.z -= this.map.height / 2;
+                    this.Scene.add(this.mapHolder);
+                };
                 Loader.prototype.addLight = function () {
                     this.Scene.add(new THREE.AmbientLight(0x333333));
                 };
                 Loader.prototype.makeMap = function (map) {
-                    this.Scene.add(debug_1.Debug.Lines(map.mst));
-                    this.Scene.add(debug_1.Debug.Points(map.points));
+                    this.mapHolder.add(debug_1.Debug.Lines(map.mst));
+                    this.mapHolder.add(debug_1.Debug.Points(map.points));
+                    this.mapHolder.add(debug_1.Debug.Rooms(map.points));
                     //this.Scene.add(Debug.Triangles(map.tri.Triangles));
                 };
                 return Loader;

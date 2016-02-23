@@ -9,12 +9,22 @@ export class Loader {
 
   public Scene: THREE.Scene;
 
-  constructor( map: Map ){
+  private mapHolder: THREE.Object3D;
+
+  constructor( private map: Map ){
     Animate.Loader = this;
     this.Scene = new THREE.Scene();
+    this.addHolder();
     this.addLight();
     this.makeMap( map );
     Debug.RotateCamera(this);
+  }
+
+  addHolder(): void{
+    this.mapHolder = new THREE.Object3D();
+    this.mapHolder.position.x -= this.map.width / 2;
+    this.mapHolder.position.z -= this.map.height / 2;
+    this.Scene.add(this.mapHolder);
   }
 
   addLight(): void{
@@ -22,8 +32,9 @@ export class Loader {
   }
 
   makeMap( map: Map ): void{
-    this.Scene.add(Debug.Lines(map.mst));
-    this.Scene.add(Debug.Points(map.points));
+    this.mapHolder.add(Debug.Lines(map.mst));
+    this.mapHolder.add(Debug.Points(map.points));
+    this.mapHolder.add(Debug.Rooms(map.points));
     //this.Scene.add(Debug.Triangles(map.tri.Triangles));
   }
 

@@ -9,10 +9,19 @@ export class Debug{
 
   public static Point(point: Geometry.Vector2): THREE.Mesh{
     let geometry = new THREE.SphereGeometry( 2, 10, 3 );
-    let material = new THREE.MeshBasicMaterial( {color: 0x0000ff} );
-    let mesh = new THREE.Mesh(geometry, material);
-    mesh.position.set(point.x, 0, point.y);
-    return mesh;
+    let whiteMat = new THREE.MeshBasicMaterial( {color: 0xffffff} );
+    let blackMat = new THREE.MeshBasicMaterial( {color: 0x000000} );
+    let innerMesh = new THREE.Mesh(geometry, blackMat);
+    innerMesh.scale.y = 0.2;
+
+    let outlineMesh = innerMesh.clone();
+    outlineMesh.material = whiteMat;
+    outlineMesh.scale.set(1.3, 0.1, 1.3);
+    innerMesh.add(outlineMesh);
+
+    innerMesh.position.set(point.x, 0, point.y);
+
+    return innerMesh;
   }
 
   public static Line(line: Geometry.Line): THREE.Line{
@@ -20,8 +29,8 @@ export class Debug{
     let material = new THREE.LineBasicMaterial({ color: 0xffffff });
 
     geometry.vertices.push(
-        new THREE.Vector3( line.v1.x, 1, line.v1.y ),
-        new THREE.Vector3( line.v2.x, 1, line.v2.y )
+        new THREE.Vector3( line.v1.x, 0, line.v1.y ),
+        new THREE.Vector3( line.v2.x, 0, line.v2.y )
     );
 
     return new THREE.Line( geometry, material );
@@ -44,29 +53,37 @@ export class Debug{
     return new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({color: Math.random() * 0xffffff, side: THREE.DoubleSide}));
   }
 
+  public static Room(point: Geometry.Vector2): THREE.Mesh{
+    if(!point.QuadTree) return new THREE.Mesh();
+    let side = point.QuadTree.Side;
+    let geometry = new THREE.BoxGeometry( side, 1, side );
+    let material = new THREE.MeshBasicMaterial( {color: Math.random() * 0xffffff} );
+    let cube = new THREE.Mesh( geometry, material );
+    cube.position.set(point.QuadTree.Centroid.x, -1, point.QuadTree.Centroid.y);
+    return cube;
+  }
+
+  public static Rooms(points: Geometry.Vector2[]): THREE.Object3D{
+    return this.RunMultiple(this.Room, points);
+  }
+
   public static Points(points: Geometry.Vector2[]): THREE.Object3D{
-    let holder = new THREE.Object3D();
-
-    for(let p = 0; p < points.length; p++)
-      holder.add( this.Point(points[p]) );
-
-    return holder;
+    return this.RunMultiple(this.Point, points);
   }
 
   public static Lines(lines: Geometry.Line[]): THREE.Object3D{
-    let holder = new THREE.Object3D();
-
-    for(let l = 0; l < lines.length; l++)
-      holder.add( this.Line(lines[l]) );
-
-    return holder;
+    return this.RunMultiple(this.Line, lines);
   }
 
   public static Triangles(tris: Geometry.Triangle[]): THREE.Object3D{
+    return this.RunMultiple(this.Triangle, tris);
+  }
+
+  public static RunMultiple(func, arr: any[]): THREE.Object3D{
     let holder = new THREE.Object3D();
 
-    for(let t = 0; t < tris.length; t++)
-      holder.add( this.Triangle(tris[t]) );
+    for(let i = 0; i < arr.length; i++)
+      holder.add( func(arr[i]) );
 
     return holder;
   }
@@ -74,21 +91,26 @@ export class Debug{
   public static RotateCamera(loader: Loader){
 
     class CameraRotator{
-      private speed = 1;
-      private cameraCircleRadius = 10;
-      private cameraAngle = 0;
+      private speed: number = 0.1;
+      private cameraCircleRadius: number = 10;
+      private cameraAngle: number = 0;
+      private initialPosition: THREE.Vector3;
 
-      constructor(private loader: Loader){}
+      constructor(private loader: Loader){
+        this.initialPosition = Animate.Camera.position.clone();
+      }
 
-      public Update(){
+      public Update(): void{
+        this.cameraAngle = this.cameraAngle % 360;
         let angle = Utils.DegToRad(this.cameraAngle += this.speed);
-        /*let newX = Animate.Camera.position.x + (this.cameraCircleRadius * Math.cos(angle));
-        let newZ = Animate.Camera.position.z + (this.cameraCircleRadius * Math.sin(angle));*/
-        let newX = Math.cos(angle) * (Animate.Camera.position.x-Animate.CameraTarget.x) - Math.sin(angle) *
-          (Animate.Camera.position.y-Animate.CameraTarget.y) + Animate.CameraTarget.x
-        let newZ = Math.sin(angle) * (Animate.Camera.position.x-Animate.CameraTarget.x) + Math.cos(angle) *
-          (Animate.Camera.position.y-Animate.CameraTarget.y) + Animate.CameraTarget.y
-        Animate.Camera.position.set(newX, Animate.Camera.position.y, newZ);
+        let curX = this.initialPosition.x;
+        let curY = this.initialPosition.y;
+
+        Animate.Camera.position.set(
+          curX * Math.cos(angle) - curY * Math.sin(angle),
+          Animate.Camera.position.y,
+          curX * Math.sin(angle) + curY * Math.cos(angle));
+
         Animate.Camera.lookAt(Animate.CameraTarget);
       }
     }

@@ -54,7 +54,7 @@ return{
     nodeMeshes: []
     ,
     rotateCamera: function(fps){
-        var angle = this.degreesToRadians(sceneVars.cameraAngle += 3 / fps),
+        var angle = this.degreesToRadians(sceneVars.cameraAngle += 30 / fps),
             newX = sceneVars.cameraPosition.x + (sceneVars.cameraCircleRadius * Math.cos(angle)),
             newZ = sceneVars.cameraPosition.z + (sceneVars.cameraCircleRadius * Math.sin(angle));
 

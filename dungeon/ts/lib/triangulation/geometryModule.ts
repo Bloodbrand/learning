@@ -10,12 +10,15 @@ export module Geometry{
     public PolyCCWAngle: number;
     public QuadTree: QuadTree;
 
-    constructor( public x: number, public y: number){
-      console.log(Utils.UniqueID());
-    }
+    constructor( public x: number, public y: number){}
 
     public Clone(): Vector2{
       return new Vector2( this.x, this.y );
+    }
+
+    public Copy(vec: Vector2): void{
+      this.x = vec.x;
+      this.y = vec.y;
     }
 
     public Magnitude(): number{

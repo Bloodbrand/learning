@@ -4,10 +4,10 @@ import {Geometry} from "./lib/triangulation/geometryModule";
 import {QuadTree} from "./lib/triangulation/quadTree";
 
 export class Map {
-  width: number = 200;
-  height: number = 200;
-  rooms: number = 125;
-  extraLines: number = 10;
+  width: number = 300;
+  height: number = 300;
+  rooms: number = 50;
+  extraLines: number = 0;
 
   points: Geometry.Vector2[];
   tri: Triangulation;

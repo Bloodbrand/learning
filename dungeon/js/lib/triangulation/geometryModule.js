@@ -1,6 +1,5 @@
-System.register(["utils"], function(exports_1, context_1) {
+System.register(["utils"], function(exports_1) {
     "use strict";
-    var __moduleName = context_1 && context_1.id;
     var __extends = (this && this.__extends) || function (d, b) {
         for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
         function __() { this.constructor = d; }
@@ -19,10 +18,13 @@ System.register(["utils"], function(exports_1, context_1) {
                     function Vector2(x, y) {
                         this.x = x;
                         this.y = y;
-                        console.log(utils_1.Utils.UniqueID());
                     }
                     Vector2.prototype.Clone = function () {
                         return new Vector2(this.x, this.y);
+                    };
+                    Vector2.prototype.Copy = function (vec) {
+                        this.x = vec.x;
+                        this.y = vec.y;
                     };
                     Vector2.prototype.Magnitude = function () {
                         return Number(Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2)).toFixed(2));

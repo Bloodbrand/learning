@@ -1,6 +1,5 @@
-System.register(["utils", "animate", "update", "three"], function(exports_1, context_1) {
+System.register(["utils", "animate", "update", "three"], function(exports_1) {
     "use strict";
-    var __moduleName = context_1 && context_1.id;
     var utils_1, animate_1, update_1, THREE;
     var Debug;
     return {
@@ -23,15 +22,21 @@ System.register(["utils", "animate", "update", "three"], function(exports_1, con
                 }
                 Debug.Point = function (point) {
                     var geometry = new THREE.SphereGeometry(2, 10, 3);
-                    var material = new THREE.MeshBasicMaterial({ color: 0x0000ff });
-                    var mesh = new THREE.Mesh(geometry, material);
-                    mesh.position.set(point.x, 0, point.y);
-                    return mesh;
+                    var whiteMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+                    var blackMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
+                    var innerMesh = new THREE.Mesh(geometry, blackMat);
+                    innerMesh.scale.y = 0.2;
+                    var outlineMesh = innerMesh.clone();
+                    outlineMesh.material = whiteMat;
+                    outlineMesh.scale.set(1.3, 0.1, 1.3);
+                    innerMesh.add(outlineMesh);
+                    innerMesh.position.set(point.x, 0, point.y);
+                    return innerMesh;
                 };
                 Debug.Line = function (line) {
                     var geometry = new THREE.Geometry();
                     var material = new THREE.LineBasicMaterial({ color: 0xffffff });
-                    geometry.vertices.push(new THREE.Vector3(line.v1.x, 1, line.v1.y), new THREE.Vector3(line.v2.x, 1, line.v2.y));
+                    geometry.vertices.push(new THREE.Vector3(line.v1.x, 0, line.v1.y), new THREE.Vector3(line.v2.x, 0, line.v2.y));
                     return new THREE.Line(geometry, material);
                 };
                 Debug.Triangle = function (tri) {
@@ -43,41 +48,49 @@ System.register(["utils", "animate", "update", "three"], function(exports_1, con
                     geometry.faces.push(face);
                     return new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ color: Math.random() * 0xffffff, side: THREE.DoubleSide }));
                 };
+                Debug.Room = function (point) {
+                    if (!point.QuadTree)
+                        return new THREE.Mesh();
+                    var side = point.QuadTree.Side;
+                    var geometry = new THREE.BoxGeometry(side, 1, side);
+                    var material = new THREE.MeshBasicMaterial({ color: Math.random() * 0xffffff });
+                    var cube = new THREE.Mesh(geometry, material);
+                    cube.position.set(point.QuadTree.Centroid.x, -1, point.QuadTree.Centroid.y);
+                    return cube;
+                };
+                Debug.Rooms = function (points) {
+                    return this.RunMultiple(this.Room, points);
+                };
                 Debug.Points = function (points) {
-                    var holder = new THREE.Object3D();
-                    for (var p = 0; p < points.length; p++)
-                        holder.add(this.Point(points[p]));
-                    return holder;
+                    return this.RunMultiple(this.Point, points);
                 };
                 Debug.Lines = function (lines) {
-                    var holder = new THREE.Object3D();
-                    for (var l = 0; l < lines.length; l++)
-                        holder.add(this.Line(lines[l]));
-                    return holder;
+                    return this.RunMultiple(this.Line, lines);
                 };
                 Debug.Triangles = function (tris) {
+                    return this.RunMultiple(this.Triangle, tris);
+                };
+                Debug.RunMultiple = function (func, arr) {
                     var holder = new THREE.Object3D();
-                    for (var t = 0; t < tris.length; t++)
-                        holder.add(this.Triangle(tris[t]));
+                    for (var i = 0; i < arr.length; i++)
+                        holder.add(func(arr[i]));
                     return holder;
                 };
                 Debug.RotateCamera = function (loader) {
                     var CameraRotator = (function () {
                         function CameraRotator(loader) {
                             this.loader = loader;
-                            this.speed = 1;
+                            this.speed = 0.1;
                             this.cameraCircleRadius = 10;
                             this.cameraAngle = 0;
+                            this.initialPosition = animate_1.Animate.Camera.position.clone();
                         }
                         CameraRotator.prototype.Update = function () {
+                            this.cameraAngle = this.cameraAngle % 360;
                             var angle = utils_1.Utils.DegToRad(this.cameraAngle += this.speed);
-                            /*let newX = Animate.Camera.position.x + (this.cameraCircleRadius * Math.cos(angle));
-                            let newZ = Animate.Camera.position.z + (this.cameraCircleRadius * Math.sin(angle));*/
-                            var newX = Math.cos(angle) * (animate_1.Animate.Camera.position.x - animate_1.Animate.CameraTarget.x) - Math.sin(angle) *
-                                (animate_1.Animate.Camera.position.y - animate_1.Animate.CameraTarget.y) + animate_1.Animate.CameraTarget.x;
-                            var newZ = Math.sin(angle) * (animate_1.Animate.Camera.position.x - animate_1.Animate.CameraTarget.x) + Math.cos(angle) *
-                                (animate_1.Animate.Camera.position.y - animate_1.Animate.CameraTarget.y) + animate_1.Animate.CameraTarget.y;
-                            animate_1.Animate.Camera.position.set(newX, animate_1.Animate.Camera.position.y, newZ);
+                            var curX = this.initialPosition.x;
+                            var curY = this.initialPosition.y;
+                            animate_1.Animate.Camera.position.set(curX * Math.cos(angle) - curY * Math.sin(angle), animate_1.Animate.Camera.position.y, curX * Math.sin(angle) + curY * Math.cos(angle));
                             animate_1.Animate.Camera.lookAt(animate_1.Animate.CameraTarget);
                         };
                         return CameraRotator;

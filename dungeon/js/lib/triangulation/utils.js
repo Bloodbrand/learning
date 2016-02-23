@@ -1,6 +1,5 @@
-System.register(["geometryModule"], function(exports_1, context_1) {
+System.register(["geometryModule"], function(exports_1) {
     "use strict";
-    var __moduleName = context_1 && context_1.id;
     var geometryModule_1;
     var Utils;
     return {
@@ -21,6 +20,10 @@ System.register(["geometryModule"], function(exports_1, context_1) {
                 Utils.RandomFromArray = function (arr, num) {
                     var chosenNumbers = [];
                     var chosen = [];
+                    if (num > arr.length) {
+                        num = arr.length;
+                        console.warn("'RandomFromArray():'More elements than available, returning max number");
+                    }
                     while (chosen.length < num) {
                         var randomNum = this.RandomNum(0, arr.length - 1);
                         if (chosenNumbers.indexOf(randomNum) == -1) {
@@ -217,8 +220,12 @@ System.register(["geometryModule"], function(exports_1, context_1) {
                     // ccw > 0, cwise < 0, collinear if ccw = 0
                     return (p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x);
                 };
-                Utils.RadToDeg = function (rad) { return rad * (180 / Math.PI); };
-                Utils.DegToRad = function (deg) { return deg * (Math.PI / 180); };
+                Utils.RadToDeg = function (rad) {
+                    return rad * (180 / Math.PI);
+                };
+                Utils.DegToRad = function (deg) {
+                    return deg * (Math.PI / 180);
+                };
                 Utils.uniqueID = 0;
                 return Utils;
             }());

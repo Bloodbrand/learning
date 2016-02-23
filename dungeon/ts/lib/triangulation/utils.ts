@@ -15,6 +15,11 @@ export class Utils{
     let chosenNumbers = [];
     let chosen = [];
 
+    if(num > arr.length){
+      num = arr.length;
+      console.warn("'RandomFromArray():'More elements than available, returning max number");
+    }
+
     while ( chosen.length < num ) {
         let randomNum = this.RandomNum( 0, arr.length - 1 );
         if ( chosenNumbers.indexOf( randomNum ) == -1 ) {
@@ -255,10 +260,15 @@ export class Utils{
 
   public static CheckCCW ( p1: Geometry.Vector2, p2: Geometry.Vector2, p3: Geometry.Vector2 ): number {
     // ccw > 0, cwise < 0, collinear if ccw = 0
-    return (p2.x - p1.x)*(p3.y - p1.y) - (p2.y - p1.y)*(p3.x - p1.x);
+    return (p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x);
   }
 
-  public static RadToDeg ( rad:number ):number { return rad * ( 180 / Math.PI ) }
-	public static DegToRad ( deg:number ):number { return deg * ( Math.PI / 180 ) }
+  public static RadToDeg ( rad:number ):number {
+    return rad * ( 180 / Math.PI )
+  }
+
+	public static DegToRad ( deg:number ):number {
+    return deg * ( Math.PI / 180 )
+  }
 
 }
