@@ -1,5 +1,6 @@
-System.register(["three", "animate", "loader", "map"], function(exports_1) {
+System.register(["three", "animate", "loader", "map"], function(exports_1, context_1) {
     "use strict";
+    var __moduleName = context_1 && context_1.id;
     var THREE, animate_1, loader_1, map_1;
     var Main;
     return {
@@ -27,7 +28,7 @@ System.register(["three", "animate", "loader", "map"], function(exports_1) {
                 };
                 Main.addCamera = function () {
                     animate_1.Animate.Camera = new THREE.PerspectiveCamera(animate_1.Animate.FOV, animate_1.Animate.ContainerWidth / animate_1.Animate.ContainerHeight, animate_1.Animate.CamNear, animate_1.Animate.CamFar);
-                    animate_1.Animate.Camera.position.set(0, 300, 0);
+                    animate_1.Animate.Camera.position.set(100, 300, 100);
                     animate_1.Animate.CameraTarget = new THREE.Vector3(100, 0, 100);
                     animate_1.Animate.Camera.lookAt(animate_1.Animate.CameraTarget);
                 };

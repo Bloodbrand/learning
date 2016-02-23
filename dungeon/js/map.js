@@ -1,5 +1,6 @@
-System.register(["./lib/triangulation/triangulation", "./lib/triangulation/utils", "./lib/triangulation/geometryModule"], function(exports_1) {
+System.register(["./lib/triangulation/triangulation", "./lib/triangulation/utils", "./lib/triangulation/geometryModule"], function(exports_1, context_1) {
     "use strict";
+    var __moduleName = context_1 && context_1.id;
     var triangulation_1, utils_1, geometryModule_1;
     var Map;
     return {
@@ -18,12 +19,14 @@ System.register(["./lib/triangulation/triangulation", "./lib/triangulation/utils
                 function Map() {
                     this.width = 200;
                     this.height = 200;
-                    this.rooms = 250;
+                    this.rooms = 125;
+                    this.extraLines = 10;
                     this.points = this.generateRandomPoints(this.rooms);
                     //this.points = this.generateCustomPoints( this.rooms );
                     this.tri = new triangulation_1.Triangulation(this.points);
                     this.tri.Triangulate();
                     this.mst = this.tri.FindMinSpanTree();
+                    this.mst = this.mst.concat(utils_1.Utils.RandomFromArray(this.tri.NonMinSpanLines, this.extraLines));
                     this.quadTree = this.tri.MakeQuadTrees(this.points, this.width, this.height);
                 }
                 Map.prototype.generateRandomPoints = function (points) {

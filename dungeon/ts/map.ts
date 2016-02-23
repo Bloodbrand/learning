@@ -4,10 +4,10 @@ import {Geometry} from "./lib/triangulation/geometryModule";
 import {QuadTree} from "./lib/triangulation/quadTree";
 
 export class Map {
-
   width: number = 200;
   height: number = 200;
-  rooms: number = 250;
+  rooms: number = 125;
+  extraLines: number = 10;
 
   points: Geometry.Vector2[];
   tri: Triangulation;
@@ -20,6 +20,7 @@ export class Map {
     this.tri = new Triangulation( this.points );
     this.tri.Triangulate();
     this.mst = this.tri.FindMinSpanTree();
+    this.mst = this.mst.concat( Utils.RandomFromArray( this.tri.NonMinSpanLines, this.extraLines ) );
     this.quadTree = this.tri.MakeQuadTrees(this.points, this.width, this.height);
   }
 
@@ -53,7 +54,7 @@ export class Map {
 
     };
 
-    return Utils.Sort( pts, "y" );
+    return Utils.Sort(pts, "y");
   }
 
 }

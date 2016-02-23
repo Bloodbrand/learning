@@ -10,21 +10,23 @@ export module Geometry{
     public PolyCCWAngle: number;
     public QuadTree: QuadTree;
 
-    constructor( public x: number, public y: number){}
+    constructor( public x: number, public y: number){
+      console.log(Utils.UniqueID());
+    }
 
     public Clone(): Vector2{
       return new Vector2( this.x, this.y );
     }
 
     public Magnitude(): number{
-      return Number(Math.sqrt( Math.pow(this.x, 2) + Math.pow(this.y, 2) ).toFixed(2));
+      return Number( Math.sqrt( Math.pow(this.x, 2) + Math.pow(this.y, 2) ).toFixed(2) );
     }
 
-    public Add( v: Vector2 ): Vector2{
+    public Add(v: Vector2): Vector2{
       return new Vector2( this.x + v.x, this.y + v.y );
     }
 
-    public Subtract( v: Vector2 ): Vector2{
+    public Subtract(v: Vector2): Vector2{
       return new Vector2( this.x + -v.x, this.y + -v.y );
     }
 

@@ -1,5 +1,6 @@
-System.register(["utils", "animate", "update", "three"], function(exports_1) {
+System.register(["utils", "animate", "update", "three"], function(exports_1, context_1) {
     "use strict";
+    var __moduleName = context_1 && context_1.id;
     var utils_1, animate_1, update_1, THREE;
     var Debug;
     return {
@@ -64,27 +65,23 @@ System.register(["utils", "animate", "update", "three"], function(exports_1) {
                     var CameraRotator = (function () {
                         function CameraRotator(loader) {
                             this.loader = loader;
-                            this.speed = 3;
+                            this.speed = 1;
                             this.cameraCircleRadius = 10;
-                            this.cameraAngle = 180;
+                            this.cameraAngle = 0;
                         }
                         CameraRotator.prototype.Update = function () {
                             var angle = utils_1.Utils.DegToRad(this.cameraAngle += this.speed);
-                            var newX = animate_1.Animate.Camera.position.x + (this.cameraCircleRadius * Math.cos(angle));
-                            var newZ = animate_1.Animate.Camera.position.z + (this.cameraCircleRadius * Math.sin(angle));
+                            /*let newX = Animate.Camera.position.x + (this.cameraCircleRadius * Math.cos(angle));
+                            let newZ = Animate.Camera.position.z + (this.cameraCircleRadius * Math.sin(angle));*/
+                            var newX = Math.cos(angle) * (animate_1.Animate.Camera.position.x - animate_1.Animate.CameraTarget.x) - Math.sin(angle) *
+                                (animate_1.Animate.Camera.position.y - animate_1.Animate.CameraTarget.y) + animate_1.Animate.CameraTarget.x;
+                            var newZ = Math.sin(angle) * (animate_1.Animate.Camera.position.x - animate_1.Animate.CameraTarget.x) + Math.cos(angle) *
+                                (animate_1.Animate.Camera.position.y - animate_1.Animate.CameraTarget.y) + animate_1.Animate.CameraTarget.y;
                             animate_1.Animate.Camera.position.set(newX, animate_1.Animate.Camera.position.y, newZ);
                             animate_1.Animate.Camera.lookAt(animate_1.Animate.CameraTarget);
                         };
                         return CameraRotator;
                     }());
-                    /*
-                    var angle = this.degreesToRadians(sceneVars.cameraAngle += 3 / fps),
-                          newX = sceneVars.cameraPosition.x + (sceneVars.cameraCircleRadius * Math.cos(angle)),
-                          newZ = sceneVars.cameraPosition.z + (sceneVars.cameraCircleRadius * Math.sin(angle));
-                
-                      this.camera.position.set(newX, sceneVars.cameraPosition.y, newZ);
-                      this.camera.lookAt(sceneVars.cameraPivot);
-                      */
                     update_1.Update.Add(new CameraRotator(loader));
                 };
                 return Debug;

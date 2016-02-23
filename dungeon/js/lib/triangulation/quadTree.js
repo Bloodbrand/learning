@@ -1,5 +1,6 @@
-System.register(["geometryModule", "utils"], function(exports_1) {
+System.register(["geometryModule", "utils"], function(exports_1, context_1) {
     "use strict";
+    var __moduleName = context_1 && context_1.id;
     var geometryModule_1, utils_1;
     var QuadTree;
     return {
@@ -31,8 +32,8 @@ System.register(["geometryModule", "utils"], function(exports_1) {
                 QuadTree.prototype.Contains = function (p) {
                     var x = p.x;
                     var y = p.y;
-                    if ((x >= this.Left && x <= this.Right) &&
-                        (y <= this.Top && y >= this.Bottom))
+                    if ((x > this.Left && x < this.Right) &&
+                        (y < this.Top && y > this.Bottom))
                         return true;
                     else
                         return false;
@@ -42,10 +43,13 @@ System.register(["geometryModule", "utils"], function(exports_1) {
                     var height = this.Top - this.Bottom;
                     var midwayX = this.Left + width / 2;
                     var midwayY = this.Bottom + height / 2;
-                    var quad1 = new QuadTree(this.Vertices[0], new geometryModule_1.Geometry.Vector2(midwayX, this.Bottom), new geometryModule_1.Geometry.Vector2(midwayX, midwayY), new geometryModule_1.Geometry.Vector2(this.Left, midwayY));
-                    var quad2 = new QuadTree(new geometryModule_1.Geometry.Vector2(midwayX, this.Bottom), this.Vertices[1], new geometryModule_1.Geometry.Vector2(this.Right, midwayY), new geometryModule_1.Geometry.Vector2(midwayX, midwayY));
-                    var quad3 = new QuadTree(new geometryModule_1.Geometry.Vector2(midwayX, midwayY), new geometryModule_1.Geometry.Vector2(this.Right, midwayY), this.Vertices[2], new geometryModule_1.Geometry.Vector2(midwayX, this.Top));
-                    var quad4 = new QuadTree(new geometryModule_1.Geometry.Vector2(this.Left, midwayY), new geometryModule_1.Geometry.Vector2(midwayX, midwayY), new geometryModule_1.Geometry.Vector2(midwayX, this.Top), this.Vertices[3]);
+                    var middleCenterV2 = new geometryModule_1.Geometry.Vector2(midwayX, midwayY);
+                    var middleTopV2 = new geometryModule_1.Geometry.Vector2(midwayX, this.Top);
+                    var middleBottomV2 = new geometryModule_1.Geometry.Vector2(midwayX, this.Bottom);
+                    var quad1 = new QuadTree(this.Vertices[0], middleBottomV2, middleCenterV2, new geometryModule_1.Geometry.Vector2(this.Left, midwayY));
+                    var quad2 = new QuadTree(middleBottomV2, this.Vertices[1], new geometryModule_1.Geometry.Vector2(this.Right, midwayY), middleCenterV2);
+                    var quad3 = new QuadTree(middleCenterV2, new geometryModule_1.Geometry.Vector2(this.Right, midwayY), this.Vertices[2], middleTopV2);
+                    var quad4 = new QuadTree(new geometryModule_1.Geometry.Vector2(this.Left, midwayY), middleCenterV2, middleTopV2, this.Vertices[3]);
                     this.Children = [quad1, quad2, quad3, quad4];
                     for (var c = 0; c < this.Children.length; c++) {
                         var curC = this.Children[c];

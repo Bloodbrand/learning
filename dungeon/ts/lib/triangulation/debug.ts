@@ -74,29 +74,24 @@ export class Debug{
   public static RotateCamera(loader: Loader){
 
     class CameraRotator{
-      private speed = 3;
+      private speed = 1;
       private cameraCircleRadius = 10;
-      private cameraAngle = 180;
+      private cameraAngle = 0;
 
       constructor(private loader: Loader){}
 
       public Update(){
         let angle = Utils.DegToRad(this.cameraAngle += this.speed);
-        let newX = Animate.Camera.position.x + (this.cameraCircleRadius * Math.cos(angle));
-        let newZ = Animate.Camera.position.z + (this.cameraCircleRadius * Math.sin(angle));
+        /*let newX = Animate.Camera.position.x + (this.cameraCircleRadius * Math.cos(angle));
+        let newZ = Animate.Camera.position.z + (this.cameraCircleRadius * Math.sin(angle));*/
+        let newX = Math.cos(angle) * (Animate.Camera.position.x-Animate.CameraTarget.x) - Math.sin(angle) *
+          (Animate.Camera.position.y-Animate.CameraTarget.y) + Animate.CameraTarget.x
+        let newZ = Math.sin(angle) * (Animate.Camera.position.x-Animate.CameraTarget.x) + Math.cos(angle) *
+          (Animate.Camera.position.y-Animate.CameraTarget.y) + Animate.CameraTarget.y
         Animate.Camera.position.set(newX, Animate.Camera.position.y, newZ);
         Animate.Camera.lookAt(Animate.CameraTarget);
       }
     }
-
-    /*
-    var angle = this.degreesToRadians(sceneVars.cameraAngle += 3 / fps),
-          newX = sceneVars.cameraPosition.x + (sceneVars.cameraCircleRadius * Math.cos(angle)),
-          newZ = sceneVars.cameraPosition.z + (sceneVars.cameraCircleRadius * Math.sin(angle));
-
-      this.camera.position.set(newX, sceneVars.cameraPosition.y, newZ);
-      this.camera.lookAt(sceneVars.cameraPivot);
-      */
 
     Update.Add(new CameraRotator(loader));
   }
