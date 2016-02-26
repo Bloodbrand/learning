@@ -30,6 +30,18 @@ export class Utils{
     return chosen;
   }
 
+  public static RandomUniqueFromArray(array: any[], num: number): any[]{
+    let uniqueArr = [];
+
+    while(uniqueArr.length != num){
+      let randomNum = this.RandomNum(0, array.length);
+      let chosen = array[this.RandomNum(0, array.length - 1)];
+      if(uniqueArr.indexOf(chosen) == -1 && chosen) uniqueArr.push(chosen);
+    }
+
+    return uniqueArr;
+  }
+
   public static ArrayFromProp ( arr: any[], prop: string | string[] ): any[] {
     let newArr = [];
     let selectedFunction;

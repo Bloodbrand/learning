@@ -33,6 +33,13 @@ export module Geometry{
       return new Vector2( this.x + -v.x, this.y + -v.y );
     }
 
+    public Adjacent(){
+      return{
+        right: new Vector2(-this.y, this.x),
+			  left:  new Vector2(this.y, -this.x),
+      }
+    }
+
   }
 
   export class Line{

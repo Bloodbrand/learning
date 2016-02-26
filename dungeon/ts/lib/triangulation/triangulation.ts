@@ -130,6 +130,6 @@ export class Triangulation{
     }
 
     return mst;
-  }  
+  }
 
 }

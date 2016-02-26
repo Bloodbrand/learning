@@ -1,6 +1,5 @@
-System.register(["three", 'animate', "./lib/triangulation/debug"], function(exports_1, context_1) {
+System.register(["three", 'animate', "./lib/triangulation/debug"], function(exports_1) {
     "use strict";
-    var __moduleName = context_1 && context_1.id;
     var THREE, animate_1, debug_1;
     var Loader;
     return {
@@ -27,8 +26,8 @@ System.register(["three", 'animate', "./lib/triangulation/debug"], function(expo
                 }
                 Loader.prototype.addHolder = function () {
                     this.mapHolder = new THREE.Object3D();
-                    this.mapHolder.position.x -= this.map.width / 2;
-                    this.mapHolder.position.z -= this.map.height / 2;
+                    this.mapHolder.position.x -= this.map.Width / 2;
+                    this.mapHolder.position.z -= this.map.Height / 2;
                     this.Scene.add(this.mapHolder);
                 };
                 Loader.prototype.addLight = function () {

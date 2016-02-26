@@ -1,6 +1,5 @@
-System.register(["three", "animate", "loader", "map"], function(exports_1, context_1) {
+System.register(["three", "animate", "loader", "map"], function(exports_1) {
     "use strict";
-    var __moduleName = context_1 && context_1.id;
     var THREE, animate_1, loader_1, map_1;
     var Main;
     return {

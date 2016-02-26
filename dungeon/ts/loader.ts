@@ -22,8 +22,8 @@ export class Loader {
 
   addHolder(): void{
     this.mapHolder = new THREE.Object3D();
-    this.mapHolder.position.x -= this.map.width / 2;
-    this.mapHolder.position.z -= this.map.height / 2;
+    this.mapHolder.position.x -= this.map.Width / 2;
+    this.mapHolder.position.z -= this.map.Height / 2;
     this.Scene.add(this.mapHolder);
   }
 

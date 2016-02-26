@@ -2,74 +2,61 @@ import {Triangulation} from "./lib/triangulation/triangulation";
 import {Utils} from "./lib/triangulation/utils";
 import {Geometry} from "./lib/triangulation/geometryModule";
 import {QuadTree} from "./lib/triangulation/quadTree";
+import {Room} from "room";
 
 export class Map {
-  public Rooms = [];
-  public Points: Geometry.Vector2[];
+  get Mst(){ return this.mst; }
+  get Width(){ return this.width; }
+  get Height(){ return this.height; }
+  get Rooms(){ return this.rooms; }
+  get Points(){ return this.points; }
 
-  width: number = 300;
-  height: number = 300;
-  roomsNum: number = 150;
-  extraLines: number = 10;
+  private rooms: Room[] = [];
+  private width: number = 300;
+  private height: number = 300;
+  private roomsNum: number = 75;
+  private extraLines: number = 100;
 
-  tri: Triangulation;
-  Mst: Geometry.Line[];
-  quadTree: QuadTree;
+  private tri: Triangulation;
+  private mst: Geometry.Line[];
+  private quadTree: QuadTree;
+  private points: Geometry.Vector2[];
+  private allRooms: QuadTree[];
 
   constructor(){
-    this.quadTree = this.MakeQuadTrees(this.width, this.height);
-    this.Rooms = this.quadTree.BottomLayer;
-    this.Points = this.generateRandomPoints( this.roomsNum );
-    //this.points = this.generateCustomPoints( this.roomsNum );
-    this.tri = new Triangulation( this.Points );
+    this.quadTree = this.MakeQuadTrees();
+    this.allRooms = this.quadTree.BottomLayer;
+    this.points = this.chooseRandomRooms( this.roomsNum );
+    this.tri = new Triangulation( this.points );
     this.tri.Triangulate();
-    this.Mst = this.tri.FindMinSpanTree();
-    this.Mst = this.Mst.concat( Utils.RandomFromArray( this.tri.NonMinSpanLines, this.extraLines ) );
+    this.mst = this.tri.FindMinSpanTree();
+    this.mst = this.mst.concat( Utils.RandomUniqueFromArray( this.tri.NonMinSpanLines, this.extraLines ) );
   }
 
-  generateRandomPoints(points: number): Geometry.Vector2[]{
-    let margin = 0;
+  chooseRandomRooms(points: number): Geometry.Vector2[]{
   	let pts = [];
 
-  	for ( let i = 0; i < points; i++ )
-  		/*pts.push(
-  			new Geometry.Vector2(
-  			Utils.RandomNum( 0 + margin, this.width - margin ),
-  			Utils.RandomNum( 0 + margin, this.height  - margin ))
-  		);*/
-      pts.push(this.Rooms[Utils.RandomNum(0, this.Rooms.length)].Centroid);
+    let quadTrees = Utils.RandomFromArray(this.allRooms, this.roomsNum);
+
+    for (let q = 0; q < quadTrees.length; q++){
+      let newRoom = new Room(3);
+      newRoom.QuadTree = quadTrees[q];
+      this.rooms.push(newRoom);
+    }
+
+    for (let r = 0; r < this.rooms.length; r++)
+        pts.push(this.rooms[r].QuadTree.Centroid);
 
   	return Utils.Sort( pts, "y" );
   }
 
-  generateCustomPoints(points: number): Geometry.Vector2[]{
-    let margin = 2;
-    let rows = 10;
-    let cols = 10;
-    let rowSize = ( this.height - margin * 2 ) / rows;
-    let colSize = ( this.width  - margin * 2) / cols;
-    let pts = [];
-
-    for ( let r = 0; r <= rows; r++ ) {
-      pts.push( new Geometry.Vector2(margin, rowSize * r + margin) );
-
-      for ( let c = 1; c <= cols; c++ )
-        pts.push( new Geometry.Vector2( colSize * c + margin + 1, rowSize * r + margin ) );
-
-    };
-
-    return Utils.Sort(pts, "y");
-  }
-
-  public MakeQuadTrees ( width: number, height: number ) {
+  public MakeQuadTrees () {
     let v1 = new Geometry.Vector2(0, 0);
-    let v2 = new Geometry.Vector2(width, 0);
-    let v3 = new Geometry.Vector2(width, height);
-    let v4 = new Geometry.Vector2(0, height);
+    let v2 = new Geometry.Vector2(this.width, 0);
+    let v3 = new Geometry.Vector2(this.width, this.height);
+    let v4 = new Geometry.Vector2(0, this.height);
     let newQuad = new QuadTree( v1, v2, v3, v4 );
-
-    //newQuad.Start( points );
-    newQuad.Start( 5 );
+    newQuad.Start( 4 );
     return newQuad;
   }
 

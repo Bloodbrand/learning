@@ -1,6 +1,5 @@
-System.register(["utils"], function(exports_1, context_1) {
+System.register(["utils"], function(exports_1) {
     "use strict";
-    var __moduleName = context_1 && context_1.id;
     var __extends = (this && this.__extends) || function (d, b) {
         for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
         function __() { this.constructor = d; }
@@ -35,6 +34,12 @@ System.register(["utils"], function(exports_1, context_1) {
                     };
                     Vector2.prototype.Subtract = function (v) {
                         return new Vector2(this.x + -v.x, this.y + -v.y);
+                    };
+                    Vector2.prototype.Adjacent = function () {
+                        return {
+                            right: new Vector2(-this.y, this.x),
+                            left: new Vector2(this.y, -this.x),
+                        };
                     };
                     return Vector2;
                 }());

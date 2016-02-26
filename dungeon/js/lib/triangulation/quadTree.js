@@ -1,6 +1,5 @@
-System.register(["geometryModule", "utils"], function(exports_1, context_1) {
+System.register(["geometryModule", "utils"], function(exports_1) {
     "use strict";
-    var __moduleName = context_1 && context_1.id;
     var geometryModule_1, utils_1;
     var QuadTree;
     return {

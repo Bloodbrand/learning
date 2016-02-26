@@ -1,6 +1,5 @@
-System.register(["geometryModule"], function(exports_1, context_1) {
+System.register(["geometryModule"], function(exports_1) {
     "use strict";
-    var __moduleName = context_1 && context_1.id;
     var geometryModule_1;
     var Utils;
     return {
@@ -34,6 +33,16 @@ System.register(["geometryModule"], function(exports_1, context_1) {
                         }
                     }
                     return chosen;
+                };
+                Utils.RandomUniqueFromArray = function (array, num) {
+                    var uniqueArr = [];
+                    while (uniqueArr.length != num) {
+                        var randomNum = this.RandomNum(0, array.length);
+                        var chosen = array[this.RandomNum(0, array.length - 1)];
+                        if (uniqueArr.indexOf(chosen) == -1 && chosen)
+                            uniqueArr.push(chosen);
+                    }
+                    return uniqueArr;
                 };
                 Utils.ArrayFromProp = function (arr, prop) {
                     var newArr = [];

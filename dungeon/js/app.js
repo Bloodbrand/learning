@@ -7,6 +7,7 @@ System.config({
         quadTree: "js/lib/triangulation/quadTree.js",
         debug: "js/lib/triangulation/debug.js",
         three: "node_modules/three/three.js",
+        room: "js/room.js",
         main: "js/main.js",
         animate: "js/animate.js",
         loader: "js/loader.js",

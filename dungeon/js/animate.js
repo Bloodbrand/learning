@@ -1,6 +1,5 @@
-System.register(["update"], function(exports_1, context_1) {
+System.register(["update"], function(exports_1) {
     "use strict";
-    var __moduleName = context_1 && context_1.id;
     var update_1;
     var Animate;
     return {
