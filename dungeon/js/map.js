@@ -1,6 +1,7 @@
-System.register(["./lib/triangulation/triangulation", "./lib/triangulation/utils", "./lib/triangulation/geometryModule"], function(exports_1) {
+System.register(["./lib/triangulation/triangulation", "./lib/triangulation/utils", "./lib/triangulation/geometryModule", "./lib/triangulation/quadTree"], function(exports_1, context_1) {
     "use strict";
-    var triangulation_1, utils_1, geometryModule_1;
+    var __moduleName = context_1 && context_1.id;
+    var triangulation_1, utils_1, geometryModule_1, quadTree_1;
     var Map;
     return {
         setters:[
@@ -12,27 +13,37 @@ System.register(["./lib/triangulation/triangulation", "./lib/triangulation/utils
             },
             function (geometryModule_1_1) {
                 geometryModule_1 = geometryModule_1_1;
+            },
+            function (quadTree_1_1) {
+                quadTree_1 = quadTree_1_1;
             }],
         execute: function() {
             Map = (function () {
                 function Map() {
+                    this.Rooms = [];
                     this.width = 300;
                     this.height = 300;
-                    this.rooms = 50;
-                    this.extraLines = 0;
-                    this.points = this.generateRandomPoints(this.rooms);
-                    //this.points = this.generateCustomPoints( this.rooms );
-                    this.tri = new triangulation_1.Triangulation(this.points);
+                    this.roomsNum = 150;
+                    this.extraLines = 10;
+                    this.quadTree = this.MakeQuadTrees(this.width, this.height);
+                    this.Rooms = this.quadTree.BottomLayer;
+                    this.Points = this.generateRandomPoints(this.roomsNum);
+                    //this.points = this.generateCustomPoints( this.roomsNum );
+                    this.tri = new triangulation_1.Triangulation(this.Points);
                     this.tri.Triangulate();
-                    this.mst = this.tri.FindMinSpanTree();
-                    this.mst = this.mst.concat(utils_1.Utils.RandomFromArray(this.tri.NonMinSpanLines, this.extraLines));
-                    this.quadTree = this.tri.MakeQuadTrees(this.points, this.width, this.height);
+                    this.Mst = this.tri.FindMinSpanTree();
+                    this.Mst = this.Mst.concat(utils_1.Utils.RandomFromArray(this.tri.NonMinSpanLines, this.extraLines));
                 }
                 Map.prototype.generateRandomPoints = function (points) {
                     var margin = 0;
                     var pts = [];
                     for (var i = 0; i < points; i++)
-                        pts.push(new geometryModule_1.Geometry.Vector2(utils_1.Utils.RandomNum(0 + margin, this.width - margin), utils_1.Utils.RandomNum(0 + margin, this.height - margin)));
+                        /*pts.push(
+                            new Geometry.Vector2(
+                            Utils.RandomNum( 0 + margin, this.width - margin ),
+                            Utils.RandomNum( 0 + margin, this.height  - margin ))
+                        );*/
+                        pts.push(this.Rooms[utils_1.Utils.RandomNum(0, this.Rooms.length)].Centroid);
                     return utils_1.Utils.Sort(pts, "y");
                 };
                 Map.prototype.generateCustomPoints = function (points) {
@@ -49,6 +60,16 @@ System.register(["./lib/triangulation/triangulation", "./lib/triangulation/utils
                     }
                     ;
                     return utils_1.Utils.Sort(pts, "y");
+                };
+                Map.prototype.MakeQuadTrees = function (width, height) {
+                    var v1 = new geometryModule_1.Geometry.Vector2(0, 0);
+                    var v2 = new geometryModule_1.Geometry.Vector2(width, 0);
+                    var v3 = new geometryModule_1.Geometry.Vector2(width, height);
+                    var v4 = new geometryModule_1.Geometry.Vector2(0, height);
+                    var newQuad = new quadTree_1.QuadTree(v1, v2, v3, v4);
+                    //newQuad.Start( points );
+                    newQuad.Start(5);
+                    return newQuad;
                 };
                 return Map;
             }());

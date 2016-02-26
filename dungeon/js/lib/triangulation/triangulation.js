@@ -1,6 +1,7 @@
-System.register(["geometryModule", "utils", "quadTree"], function(exports_1) {
+System.register(["geometryModule", "utils"], function(exports_1, context_1) {
     "use strict";
-    var geometryModule_1, utils_1, quadTree_1;
+    var __moduleName = context_1 && context_1.id;
+    var geometryModule_1, utils_1;
     var Triangulation;
     return {
         setters:[
@@ -9,9 +10,6 @@ System.register(["geometryModule", "utils", "quadTree"], function(exports_1) {
             },
             function (utils_1_1) {
                 utils_1 = utils_1_1;
-            },
-            function (quadTree_1_1) {
-                quadTree_1 = quadTree_1_1;
             }],
         execute: function() {
             Triangulation = (function () {
@@ -107,15 +105,6 @@ System.register(["geometryModule", "utils", "quadTree"], function(exports_1) {
                         }
                     }
                     return mst;
-                };
-                Triangulation.prototype.MakeQuadTrees = function (points, width, height) {
-                    var v1 = new geometryModule_1.Geometry.Vector2(0, 0);
-                    var v2 = new geometryModule_1.Geometry.Vector2(width, 0);
-                    var v3 = new geometryModule_1.Geometry.Vector2(width, height);
-                    var v4 = new geometryModule_1.Geometry.Vector2(0, height);
-                    var newQuad = new quadTree_1.QuadTree(v1, v2, v3, v4);
-                    newQuad.Start(points);
-                    return newQuad;
                 };
                 return Triangulation;
             }());

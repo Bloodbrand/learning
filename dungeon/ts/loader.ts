@@ -32,9 +32,9 @@ export class Loader {
   }
 
   makeMap( map: Map ): void{
-    this.mapHolder.add(Debug.Lines(map.mst));
-    this.mapHolder.add(Debug.Points(map.points));
-    this.mapHolder.add(Debug.Rooms(map.points));
+    this.mapHolder.add(Debug.Lines(map.Mst));
+    this.mapHolder.add(Debug.Points(map.Points));
+    this.mapHolder.add(Debug.Rooms(map.Rooms));
     //this.Scene.add(Debug.Triangles(map.tri.Triangles));
   }
 

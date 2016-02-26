@@ -130,17 +130,6 @@ export class Triangulation{
     }
 
     return mst;
-  }
-
-  public MakeQuadTrees ( points: Geometry.Vector2[], width: number, height: number ) {
-    let v1 = new Geometry.Vector2(0, 0);
-    let v2 = new Geometry.Vector2(width, 0);
-    let v3 = new Geometry.Vector2(width, height);
-    let v4 = new Geometry.Vector2(0, height);
-    let newQuad = new QuadTree( v1, v2, v3, v4 );
-
-    newQuad.Start( points );
-    return newQuad;
-  }
+  }  
 
 }

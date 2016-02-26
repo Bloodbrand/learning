@@ -2,23 +2,24 @@ import {Geometry} from "geometryModule";
 import {Utils} from "utils";
 import {Loader} from "loader";
 import {Animate} from "animate";
+import {QuadTree} from "QuadTree";
 import {Update} from "update";
 import THREE = require("three");
 
 export class Debug{
 
   public static Point(point: Geometry.Vector2): THREE.Mesh{
-    let geometry = new THREE.SphereGeometry( 2, 10, 3 );
-    let whiteMat = new THREE.MeshBasicMaterial( {color: 0xffffff} );
-    let blackMat = new THREE.MeshBasicMaterial( {color: 0x000000} );
-    let innerMesh = new THREE.Mesh(geometry, blackMat);
-    innerMesh.scale.y = 0.2;
+    let sides = 6;
+    let geometry = new THREE.CircleGeometry(1, sides);
+    let mat = new THREE.MeshBasicMaterial( {color: 0xffffff} );
+    let innerMesh = new THREE.Mesh(geometry, mat);
 
-    let outlineMesh = innerMesh.clone();
-    outlineMesh.material = whiteMat;
-    outlineMesh.scale.set(1.3, 0.1, 1.3);
-    innerMesh.add(outlineMesh);
+    geometry = new THREE.CircleGeometry(2, sides);
+    mat = new THREE.MeshBasicMaterial( {color: 0xffffff} );
+    let outerMesh = new THREE.Mesh(geometry, mat);
 
+    innerMesh.add(outerMesh);
+    innerMesh.rotation.x -= Math.PI / 2;
     innerMesh.position.set(point.x, 0, point.y);
 
     return innerMesh;
@@ -53,18 +54,18 @@ export class Debug{
     return new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({color: Math.random() * 0xffffff, side: THREE.DoubleSide}));
   }
 
-  public static Room(point: Geometry.Vector2): THREE.Mesh{
-    if(!point.QuadTree) return new THREE.Mesh();
-    let side = point.QuadTree.Side;
+  public static Room(qt: QuadTree): THREE.Mesh{
+    //if(!point.QuadTree) return new THREE.Mesh();
+    let side = qt.Side;
     let geometry = new THREE.BoxGeometry( side, 1, side );
-    let material = new THREE.MeshBasicMaterial( {color: Math.random() * 0xffffff} );
+    let material = new THREE.MeshBasicMaterial( {color: Math.random() * 0x0000ff} );
     let cube = new THREE.Mesh( geometry, material );
-    cube.position.set(point.QuadTree.Centroid.x, -1, point.QuadTree.Centroid.y);
+    cube.position.set(qt.Centroid.x, -1, qt.Centroid.y);
     return cube;
   }
 
-  public static Rooms(points: Geometry.Vector2[]): THREE.Object3D{
-    return this.RunMultiple(this.Room, points);
+  public static Rooms(qts: QuadTree[]): THREE.Object3D{
+    return this.RunMultiple(this.Room, qts);
   }
 
   public static Points(points: Geometry.Vector2[]): THREE.Object3D{

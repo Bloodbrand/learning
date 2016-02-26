@@ -9,7 +9,7 @@ import {Map} from "map";
 export class Main{
 
   static addRenderer() {
-    Animate.Renderer = new THREE.WebGLRenderer( {antialias: true} );
+    Animate.Renderer = new THREE.WebGLRenderer({antialias: true});
     Animate.Renderer.setSize( Animate.ContainerWidth, Animate.ContainerHeight);
     Animate.Container.appendChild( Animate.Renderer.domElement );
   }

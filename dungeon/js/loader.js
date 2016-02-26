@@ -1,5 +1,6 @@
-System.register(["three", 'animate', "./lib/triangulation/debug"], function(exports_1) {
+System.register(["three", 'animate', "./lib/triangulation/debug"], function(exports_1, context_1) {
     "use strict";
+    var __moduleName = context_1 && context_1.id;
     var THREE, animate_1, debug_1;
     var Loader;
     return {
@@ -34,9 +35,9 @@ System.register(["three", 'animate', "./lib/triangulation/debug"], function(expo
                     this.Scene.add(new THREE.AmbientLight(0x333333));
                 };
                 Loader.prototype.makeMap = function (map) {
-                    this.mapHolder.add(debug_1.Debug.Lines(map.mst));
-                    this.mapHolder.add(debug_1.Debug.Points(map.points));
-                    this.mapHolder.add(debug_1.Debug.Rooms(map.points));
+                    this.mapHolder.add(debug_1.Debug.Lines(map.Mst));
+                    this.mapHolder.add(debug_1.Debug.Points(map.Points));
+                    this.mapHolder.add(debug_1.Debug.Rooms(map.Rooms));
                     //this.Scene.add(Debug.Triangles(map.tri.Triangles));
                 };
                 return Loader;

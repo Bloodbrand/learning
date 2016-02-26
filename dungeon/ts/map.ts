@@ -4,24 +4,27 @@ import {Geometry} from "./lib/triangulation/geometryModule";
 import {QuadTree} from "./lib/triangulation/quadTree";
 
 export class Map {
+  public Rooms = [];
+  public Points: Geometry.Vector2[];
+
   width: number = 300;
   height: number = 300;
-  rooms: number = 50;
-  extraLines: number = 0;
+  roomsNum: number = 150;
+  extraLines: number = 10;
 
-  points: Geometry.Vector2[];
   tri: Triangulation;
-  mst: Geometry.Line[];
+  Mst: Geometry.Line[];
   quadTree: QuadTree;
 
   constructor(){
-    this.points = this.generateRandomPoints( this.rooms );
-    //this.points = this.generateCustomPoints( this.rooms );
-    this.tri = new Triangulation( this.points );
+    this.quadTree = this.MakeQuadTrees(this.width, this.height);
+    this.Rooms = this.quadTree.BottomLayer;
+    this.Points = this.generateRandomPoints( this.roomsNum );
+    //this.points = this.generateCustomPoints( this.roomsNum );
+    this.tri = new Triangulation( this.Points );
     this.tri.Triangulate();
-    this.mst = this.tri.FindMinSpanTree();
-    this.mst = this.mst.concat( Utils.RandomFromArray( this.tri.NonMinSpanLines, this.extraLines ) );
-    this.quadTree = this.tri.MakeQuadTrees(this.points, this.width, this.height);
+    this.Mst = this.tri.FindMinSpanTree();
+    this.Mst = this.Mst.concat( Utils.RandomFromArray( this.tri.NonMinSpanLines, this.extraLines ) );
   }
 
   generateRandomPoints(points: number): Geometry.Vector2[]{
@@ -29,11 +32,12 @@ export class Map {
   	let pts = [];
 
   	for ( let i = 0; i < points; i++ )
-  		pts.push(
+  		/*pts.push(
   			new Geometry.Vector2(
   			Utils.RandomNum( 0 + margin, this.width - margin ),
   			Utils.RandomNum( 0 + margin, this.height  - margin ))
-  		);
+  		);*/
+      pts.push(this.Rooms[Utils.RandomNum(0, this.Rooms.length)].Centroid);
 
   	return Utils.Sort( pts, "y" );
   }
@@ -55,6 +59,18 @@ export class Map {
     };
 
     return Utils.Sort(pts, "y");
+  }
+
+  public MakeQuadTrees ( width: number, height: number ) {
+    let v1 = new Geometry.Vector2(0, 0);
+    let v2 = new Geometry.Vector2(width, 0);
+    let v3 = new Geometry.Vector2(width, height);
+    let v4 = new Geometry.Vector2(0, height);
+    let newQuad = new QuadTree( v1, v2, v3, v4 );
+
+    //newQuad.Start( points );
+    newQuad.Start( 5 );
+    return newQuad;
   }
 
 }

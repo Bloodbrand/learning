@@ -1,9 +1,11 @@
 import {Geometry} from "geometryModule";
 import {Utils} from "utils";
+import {Debug} from "debug";
 
 export class QuadTree{
 
   public Children: QuadTree[] = [];
+  public BottomLayer: QuadTree[] = [];
   public Parent: QuadTree;
   public Vertices: Geometry.Vector2[];
   public Left: number;
@@ -14,6 +16,7 @@ export class QuadTree{
   public Points: Geometry.Vector2[];
   public ID: number;
   public Centroid: Geometry.Vector2;
+  public Depth: number;
 
   capacity: number = 1;
   containedPoints: Geometry.Vector2[] = [];
@@ -21,7 +24,7 @@ export class QuadTree{
   constructor(a: Geometry.Vector2, b: Geometry.Vector2, c: Geometry.Vector2, d: Geometry.Vector2){
     this.ID = Utils.UniqueID();
     this.Vertices = [ a, b, c, d ];
-    this.Centroid = Utils.FindPolyCentroid([ a, b, c, d ] );
+    this.Centroid = Utils.FindPolyCentroid([ a, b, c, d ]);
     let verticesClone = this.Vertices.slice(0);
 
     Utils.Sort(verticesClone, "x");
@@ -45,11 +48,14 @@ export class QuadTree{
         return false;
   }
 
-  public Divide(): QuadTree[] {
+  public Divide(any?): QuadTree[];
+  public Divide(depth: number): QuadTree[];
+
+  public Divide(arg): QuadTree[] {
     let width = this.Right - this.Left;
     let height = this.Top - this.Bottom;
-    let midwayX = Math.round(this.Left + width  / 2);
-    let midwayY = Math.round(this.Bottom + height / 2);
+    let midwayX = this.Left + width  / 2;
+    let midwayY = this.Bottom + height / 2;
 
     let quad1 = new QuadTree(
         this.Vertices[0],
@@ -82,15 +88,53 @@ export class QuadTree{
     this.Children = [ quad1, quad2, quad3, quad4 ];
 
     for (let c = 0; c < this.Children.length; c++) {
-        let curC = this.Children[ c ];
+        let curC = this.Children[c];
         curC.Parent = this;
-        curC.Start( this.Points );
+
+        if(typeof arg === "number") // depth
+          curC.Start( arg );
+        else
+          curC.Start( this.Points );
     }
 
     return this.Children;
   };
 
-  public Start ( points: Geometry.Vector2[] ) {
+  public Start( depth: number ): void;
+  public Start( points: Geometry.Vector2[] ): void;
+
+  public Start( args: any ): any {
+    // depth
+    if (typeof args === "number")
+      this.startDepth(args);
+
+    // points
+    if (args.constructor.name === "Array")
+      this.startPoints(args);
+  };
+
+  startDepth(depth: number): void{
+    if (!this.Parent)
+      this.Depth = 0;
+    else
+      this.Depth = this.Parent.Depth + 1;
+
+    if (this.Depth < depth)
+      this.Divide(depth);
+    else{
+      let parent = this.Parent;
+      let last;
+
+      while(parent){
+        last = parent;
+        parent = parent.Parent;
+      }
+
+      last.BottomLayer.push(this);
+    }
+  }
+
+  startPoints(points: Geometry.Vector2[]): void{
     this.Points = points;
 
     for ( let p = 0; p < this.Points.length; p++ ) {
@@ -107,7 +151,7 @@ export class QuadTree{
                 break;
             }
         }
-    };
-  };
+    }
+  }
 
 }

@@ -1,5 +1,6 @@
-System.register(["utils", "animate", "update", "three"], function(exports_1) {
+System.register(["utils", "animate", "update", "three"], function(exports_1, context_1) {
     "use strict";
+    var __moduleName = context_1 && context_1.id;
     var utils_1, animate_1, update_1, THREE;
     var Debug;
     return {
@@ -21,15 +22,15 @@ System.register(["utils", "animate", "update", "three"], function(exports_1) {
                 function Debug() {
                 }
                 Debug.Point = function (point) {
-                    var geometry = new THREE.SphereGeometry(2, 10, 3);
-                    var whiteMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
-                    var blackMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
-                    var innerMesh = new THREE.Mesh(geometry, blackMat);
-                    innerMesh.scale.y = 0.2;
-                    var outlineMesh = innerMesh.clone();
-                    outlineMesh.material = whiteMat;
-                    outlineMesh.scale.set(1.3, 0.1, 1.3);
-                    innerMesh.add(outlineMesh);
+                    var sides = 6;
+                    var geometry = new THREE.CircleGeometry(1, sides);
+                    var mat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+                    var innerMesh = new THREE.Mesh(geometry, mat);
+                    geometry = new THREE.CircleGeometry(2, sides);
+                    mat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+                    var outerMesh = new THREE.Mesh(geometry, mat);
+                    innerMesh.add(outerMesh);
+                    innerMesh.rotation.x -= Math.PI / 2;
                     innerMesh.position.set(point.x, 0, point.y);
                     return innerMesh;
                 };
@@ -48,18 +49,17 @@ System.register(["utils", "animate", "update", "three"], function(exports_1) {
                     geometry.faces.push(face);
                     return new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ color: Math.random() * 0xffffff, side: THREE.DoubleSide }));
                 };
-                Debug.Room = function (point) {
-                    if (!point.QuadTree)
-                        return new THREE.Mesh();
-                    var side = point.QuadTree.Side;
+                Debug.Room = function (qt) {
+                    //if(!point.QuadTree) return new THREE.Mesh();
+                    var side = qt.Side;
                     var geometry = new THREE.BoxGeometry(side, 1, side);
-                    var material = new THREE.MeshBasicMaterial({ color: Math.random() * 0xffffff });
+                    var material = new THREE.MeshBasicMaterial({ color: Math.random() * 0x0000ff });
                     var cube = new THREE.Mesh(geometry, material);
-                    cube.position.set(point.QuadTree.Centroid.x, -1, point.QuadTree.Centroid.y);
+                    cube.position.set(qt.Centroid.x, -1, qt.Centroid.y);
                     return cube;
                 };
-                Debug.Rooms = function (points) {
-                    return this.RunMultiple(this.Room, points);
+                Debug.Rooms = function (qts) {
+                    return this.RunMultiple(this.Room, qts);
                 };
                 Debug.Points = function (points) {
                     return this.RunMultiple(this.Point, points);

@@ -5,6 +5,7 @@ System.config({
         geometryModule: "js/lib/triangulation/geometryModule.js",
         utils: "js/lib/triangulation/utils.js",
         quadTree: "js/lib/triangulation/quadTree.js",
+        debug: "js/lib/triangulation/debug.js",
         three: "node_modules/three/three.js",
         main: "js/main.js",
         animate: "js/animate.js",
