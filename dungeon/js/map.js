@@ -1,5 +1,6 @@
-System.register(["./lib/triangulation/triangulation", "./lib/triangulation/utils", "./lib/triangulation/geometryModule", "./lib/triangulation/quadTree", "room"], function(exports_1) {
+System.register(["./lib/triangulation/triangulation", "./lib/triangulation/utils", "./lib/triangulation/geometryModule", "./lib/triangulation/quadTree", "room"], function(exports_1, context_1) {
     "use strict";
+    var __moduleName = context_1 && context_1.id;
     var triangulation_1, utils_1, geometryModule_1, quadTree_1, room_1;
     var Map;
     return {

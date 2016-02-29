@@ -1,5 +1,6 @@
-System.register(["three", 'animate', "./lib/triangulation/debug"], function(exports_1) {
+System.register(["three", 'animate', "./lib/triangulation/debug"], function(exports_1, context_1) {
     "use strict";
+    var __moduleName = context_1 && context_1.id;
     var THREE, animate_1, debug_1;
     var Loader;
     return {

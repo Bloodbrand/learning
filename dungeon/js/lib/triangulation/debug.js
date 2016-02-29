@@ -1,5 +1,6 @@
-System.register(["utils", "animate", "update", "three"], function(exports_1) {
+System.register(["utils", "animate", "update", "three"], function(exports_1, context_1) {
     "use strict";
+    var __moduleName = context_1 && context_1.id;
     var utils_1, animate_1, update_1, THREE;
     var Debug;
     return {
