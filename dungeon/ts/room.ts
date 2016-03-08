@@ -1,13 +1,15 @@
 import {QuadTree} from "./lib/triangulation/quadTree";
 import {Utils} from "./lib/triangulation/Utils";
+import {Defs} from "defs";
 
 export class Room{
   public QuadTree: QuadTree;
+  public Difficulty: number;
+  public MapGridX: number;
+  public MapGridY: number;
 
-  private maxDifficulty = 4;
-
-  constructor(public Difficulty?: number){
-    if(Difficulty == undefined) this.Difficulty = Utils.RandomNum(0, this.maxDifficulty)
+  constructor(set: Defs.Room){
+    this.Difficulty = set.difficulty;
   }
 
   public SetDifficulty(d: number):void{

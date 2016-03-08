@@ -39,18 +39,9 @@ System.register(["utils", "animate", "update", "three"], function(exports_1) {
                     var material = new THREE.LineBasicMaterial({ color: 0xffffff });
                     var v1 = line.v1;
                     var v2 = line.v2;
-                    if (v1.x == v2.x || v1.y == v2.y) {
-                        geometry.vertices.push(new THREE.Vector3(v1.x, 0, v1.y), new THREE.Vector3(v2.x, 0, v2.y));
-                    }
-                    else {
-                        geometry.vertices.push(new THREE.Vector3(v1.x, 0, v1.y), new THREE.Vector3(v1.x, 0, v2.y));
-                        geometry.vertices.push(new THREE.Vector3(v1.x, 0, v2.y), new THREE.Vector3(v2.x, 0, v2.y));
-                    }
+                    geometry.vertices.push(new THREE.Vector3(v1.x, 0, v1.y), new THREE.Vector3(v2.x, 0, v2.y));
                     return new THREE.Line(geometry, material);
                 };
-                /*private straightLine(line: Geometry.Line): Geometry.Line{
-              
-                }*/
                 Debug.Triangle = function (tri) {
                     var normal = new THREE.Vector3(0, 1, 0);
                     var color = new THREE.Color(0xffffff);
@@ -80,7 +71,16 @@ System.register(["utils", "animate", "update", "three"], function(exports_1) {
                     return plane;
                 };
                 Debug.Rooms = function (rooms) {
-                    return this.RunMultiple(this.Room, rooms);
+                    var allPlanes = this.RunMultiple(this.Room, rooms);
+                    //TODO: merge geometries
+                    /*let mergedGeom = new THREE.Geometry();
+                
+                    for (let p = 0; p < allPlanes.children.length; p++) {
+                      let curPlane = allPlanes.children[p];
+                
+                    }
+                    */
+                    return allPlanes;
                 };
                 Debug.Points = function (points) {
                     return this.RunMultiple(this.Point, points);

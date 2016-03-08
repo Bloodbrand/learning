@@ -38,7 +38,7 @@ System.register(["geometryModule", "utils"], function(exports_1) {
                     else
                         return false;
                 };
-                QuadTree.prototype.Divide = function (arg) {
+                QuadTree.prototype.Divide = function (depth) {
                     var width = this.Right - this.Left;
                     var height = this.Top - this.Bottom;
                     var midwayX = this.Left + width / 2;
@@ -51,24 +51,12 @@ System.register(["geometryModule", "utils"], function(exports_1) {
                     for (var c = 0; c < this.Children.length; c++) {
                         var curC = this.Children[c];
                         curC.Parent = this;
-                        if (typeof arg === "number")
-                            curC.Start(arg);
-                        else
-                            curC.Start(this.Points);
+                        curC.Start(depth);
                     }
                     return this.Children;
                 };
                 ;
-                QuadTree.prototype.Start = function (args) {
-                    // depth
-                    if (typeof args === "number")
-                        this.startDepth(args);
-                    // points
-                    if (args.constructor.name === "Array")
-                        this.startPoints(args);
-                };
-                ;
-                QuadTree.prototype.startDepth = function (depth) {
+                QuadTree.prototype.Start = function (depth) {
                     if (!this.Parent)
                         this.Depth = 0;
                     else
@@ -85,23 +73,7 @@ System.register(["geometryModule", "utils"], function(exports_1) {
                         last.BottomLayer.push(this);
                     }
                 };
-                QuadTree.prototype.startPoints = function (points) {
-                    this.Points = points;
-                    for (var p = 0; p < this.Points.length; p++) {
-                        var curP = this.Points[p];
-                        if (this.Contains(curP)) {
-                            if (this.containedPoints.length < this.capacity) {
-                                curP.QuadTree = this;
-                                this.containedPoints.push(curP);
-                            }
-                            else {
-                                this.containedPoints.length = 0;
-                                this.Divide();
-                                break;
-                            }
-                        }
-                    }
-                };
+                ;
                 return QuadTree;
             }());
             exports_1("QuadTree", QuadTree);

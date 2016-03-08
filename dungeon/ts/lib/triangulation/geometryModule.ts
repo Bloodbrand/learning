@@ -1,5 +1,6 @@
 import {Utils} from "utils";
 import {QuadTree} from "quadTree";
+import {Room} from "room";
 
 export module Geometry{
 
@@ -9,6 +10,7 @@ export module Geometry{
     public TriCCWAngle: number;
     public PolyCCWAngle: number;
     public QuadTree: QuadTree;
+    public AssociatedRoom: Room;
 
     constructor( public x: number, public y: number){}
 

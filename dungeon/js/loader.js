@@ -20,7 +20,7 @@ System.register(["three", 'animate', "./lib/triangulation/debug"], function(expo
                     animate_1.Animate.Loader = this;
                     this.Scene = new THREE.Scene();
                     this.addHolder();
-                    this.addLight();
+                    //this.addLight();
                     this.makeMap(map);
                     debug_1.Debug.RotateCamera(this);
                 }
@@ -31,13 +31,13 @@ System.register(["three", 'animate', "./lib/triangulation/debug"], function(expo
                     this.Scene.add(this.mapHolder);
                 };
                 Loader.prototype.addLight = function () {
-                    this.Scene.add(new THREE.AmbientLight(0x333333));
+                    this.Scene.add(new THREE.AmbientLight(0xffffff));
                 };
                 Loader.prototype.makeMap = function (map) {
-                    this.mapHolder.add(debug_1.Debug.Lines(map.Mst));
+                    this.mapHolder.add(debug_1.Debug.Lines(map.Corridors));
                     this.mapHolder.add(debug_1.Debug.Points(map.Points));
                     this.mapHolder.add(debug_1.Debug.Rooms(map.Rooms));
-                    //this.Scene.add(Debug.Triangles(map.tri.Triangles));
+                    //this.mapHolder.add(Debug.Triangles(map.Triangulation.Triangles));
                 };
                 return Loader;
             }());

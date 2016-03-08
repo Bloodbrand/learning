@@ -15,7 +15,7 @@ export class Loader {
     Animate.Loader = this;
     this.Scene = new THREE.Scene();
     this.addHolder();
-    this.addLight();
+    //this.addLight();
     this.makeMap( map );
     Debug.RotateCamera(this);
   }
@@ -28,14 +28,14 @@ export class Loader {
   }
 
   addLight(): void{
-    this.Scene.add(new THREE.AmbientLight(0x333333));
+    this.Scene.add(new THREE.AmbientLight(0xffffff));
   }
 
   makeMap( map: Map ): void{
-    this.mapHolder.add(Debug.Lines(map.Mst));
+    this.mapHolder.add(Debug.Lines(map.Corridors));
     this.mapHolder.add(Debug.Points(map.Points));
     this.mapHolder.add(Debug.Rooms(map.Rooms));
-    //this.Scene.add(Debug.Triangles(map.tri.Triangles));
+    //this.mapHolder.add(Debug.Triangles(map.Triangulation.Triangles));
   }
 
 }

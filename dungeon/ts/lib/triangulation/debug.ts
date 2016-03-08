@@ -33,30 +33,13 @@ export class Debug{
     let v1 = line.v1;
     let v2 = line.v2;
 
-    if(v1.x == v2.x || v1.y == v2.y){ // straight line
-      geometry.vertices.push(
-          new THREE.Vector3( v1.x, 0, v1.y ),
-          new THREE.Vector3( v2.x, 0, v2.y )
-      );
-    }
-    else {                           // diagonal line
-      geometry.vertices.push(
-          new THREE.Vector3( v1.x, 0, v1.y ),
-          new THREE.Vector3( v1.x, 0, v2.y )
-      );
-
-      geometry.vertices.push(
-          new THREE.Vector3( v1.x, 0, v2.y ),
-          new THREE.Vector3( v2.x, 0, v2.y )
-      );
-    }
+    geometry.vertices.push(
+        new THREE.Vector3( v1.x, 0, v1.y ),
+        new THREE.Vector3( v2.x, 0, v2.y )
+    );
 
     return new THREE.Line( geometry, material );
   }
-
-  /*private straightLine(line: Geometry.Line): Geometry.Line{
-
-  }*/
 
   public static Triangle(tri: Geometry.Triangle): THREE.Mesh{
     let normal = new THREE.Vector3( 0, 1, 0 );
@@ -88,7 +71,16 @@ export class Debug{
   }
 
   public static Rooms(rooms: Room[]): THREE.Object3D{
-    return this.RunMultiple(this.Room, rooms);
+    let allPlanes = this.RunMultiple(this.Room, rooms);
+    //TODO: merge geometries
+    /*let mergedGeom = new THREE.Geometry();
+
+    for (let p = 0; p < allPlanes.children.length; p++) {
+      let curPlane = allPlanes.children[p];
+
+    }
+    */
+    return allPlanes;
   }
 
   public static Points(points: Geometry.Vector2[]): THREE.Object3D{

@@ -1,19 +1,12 @@
-System.register(["./lib/triangulation/Utils"], function(exports_1) {
+System.register([], function(exports_1) {
     "use strict";
-    var Utils_1;
     var Room;
     return {
-        setters:[
-            function (Utils_1_1) {
-                Utils_1 = Utils_1_1;
-            }],
+        setters:[],
         execute: function() {
             Room = (function () {
-                function Room(Difficulty) {
-                    this.Difficulty = Difficulty;
-                    this.maxDifficulty = 4;
-                    if (Difficulty == undefined)
-                        this.Difficulty = Utils_1.Utils.RandomNum(0, this.maxDifficulty);
+                function Room(set) {
+                    this.Difficulty = set.difficulty;
                 }
                 Room.prototype.SetDifficulty = function (d) {
                 };

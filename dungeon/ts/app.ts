@@ -14,7 +14,8 @@ System.config({
     animate: "js/animate.js",
     loader : "js/loader.js",
     update: "js/update.js",
-    map    : "js/map.js"
+    map    : "js/map.js",
+    defs:   "js/defs.js"
   }
 });
 

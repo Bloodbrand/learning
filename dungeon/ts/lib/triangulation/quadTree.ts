@@ -48,10 +48,7 @@ export class QuadTree{
         return false;
   }
 
-  public Divide(any?): QuadTree[];
-  public Divide(depth: number): QuadTree[];
-
-  public Divide(arg): QuadTree[] {
+  public Divide(depth: number): QuadTree[] {
     let width = this.Right - this.Left;
     let height = this.Top - this.Bottom;
     let midwayX = this.Left + width  / 2;
@@ -90,30 +87,13 @@ export class QuadTree{
     for (let c = 0; c < this.Children.length; c++) {
         let curC = this.Children[c];
         curC.Parent = this;
-
-        if(typeof arg === "number") // depth
-          curC.Start( arg );
-        else
-          curC.Start( this.Points );
+        curC.Start( depth );
     }
 
     return this.Children;
   };
 
-  public Start( depth: number ): void;
-  public Start( points: Geometry.Vector2[] ): void;
-
-  public Start( args: any ): any {
-    // depth
-    if (typeof args === "number")
-      this.startDepth(args);
-
-    // points
-    if (args.constructor.name === "Array")
-      this.startPoints(args);
-  };
-
-  startDepth(depth: number): void{
+  public Start( depth: number ): any {
     if (!this.Parent)
       this.Depth = 0;
     else
@@ -132,26 +112,6 @@ export class QuadTree{
 
       last.BottomLayer.push(this);
     }
-  }
-
-  startPoints(points: Geometry.Vector2[]): void{
-    this.Points = points;
-
-    for ( let p = 0; p < this.Points.length; p++ ) {
-        let curP = this.Points[p];
-
-        if( this.Contains(curP) ) {
-            if (this.containedPoints.length < this.capacity) {
-                curP.QuadTree = this;
-                this.containedPoints.push( curP );
-            }
-            else {
-                this.containedPoints.length = 0;
-                this.Divide();
-                break;
-            }
-        }
-    }
-  }
+  };
 
 }
